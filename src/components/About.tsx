@@ -126,6 +126,10 @@ export default function About() {
       id="about"
       className="min-h-screen w-full bg-black text-white flex flex-col items-center justify-center px-6"
     >
+      <br />
+      <br />
+      <br />
+      <br />
       {/* Title */}
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
