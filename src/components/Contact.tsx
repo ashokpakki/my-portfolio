@@ -13,7 +13,9 @@ export default function Contact() {
         viewport={{ once: true }}
         className="max-w-xl w-full"
       >
-        <h2 className="text-4xl font-bold mb-6 text-center">Contact Me</h2>
+        <h2 className="text-4xl font-bold mb-6 text-center text-cyan-400">
+          Contact Me
+        </h2>
 
         <form
           className="flex flex-col gap-4"

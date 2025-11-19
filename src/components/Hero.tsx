@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { SiLinkedin, SiGithub, SiLeetcode, SiGmail } from "react-icons/si";
 import { ImLocation } from "react-icons/im";
+import Greeting from "./Greeting";
 
 export default function Hero() {
   return (
@@ -16,9 +17,15 @@ export default function Hero() {
         className="text-center"
       >
         {/* BIG Animated Gradient Text */}
-        <h1 className="text-6xl md:text-8xl font-extrabold mb-6 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent animate-gradient">
-          Hi, I'm Ashok Pakki
+        <h1>
+          <Greeting text="Hello !" />
         </h1>
+        <motion.h1
+          whileHover={{ scale: 1.1, textShadow: "0px 0px 20px #ff00ffff" }}
+          className="text-7xl md:text-8xl font-extrabold mb-6 bg-gradient-to-r from-pink-400 via-red-500 to-purple-500 bg-clip-text text-transparent animate-gradient cursor-hover"
+        >
+          I'm Ashok Pakki
+        </motion.h1>
 
         {/* Subtitle */}
         <motion.p

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-
+import Greeting from "./Greeting";
 export default function About() {
   const skills = [
     {
@@ -132,7 +132,7 @@ export default function About() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="text-4xl md:text-6xl font-bold mb-10"
+        className="text-7xl md:text-7xl font-extrabold mb-6 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent animate-gradient cursor-hover"
       >
         About Me
       </motion.h2>
@@ -149,9 +149,9 @@ export default function About() {
         >
           {/* Work Experience */}
           <div>
-            <h3 className="text-2xl font-semibold mb-3 text-cyan-400">
+            <h2 className="text-2xl font-semibold mb-3 text-cyan-400">
               Work Experience
-            </h3>
+            </h2>
             <ul className="space-y-3 text-white/80">
               <li>
                 <p className="flex items-center gap-3 text-lg">
@@ -172,9 +172,9 @@ export default function About() {
 
           {/* Education */}
           <div>
-            <h3 className="text-2xl font-semibold mb-3 text-cyan-400">
+            <h2 className="text-2xl font-semibold mb-3 text-cyan-400">
               Education
-            </h3>
+            </h2>
             <ul className="space-y-3 text-white/80">
               <li>
                 <p className="flex items-center gap-3 text-lg">
@@ -222,7 +222,9 @@ export default function About() {
           transition={{ duration: 0.6 }}
           className="flex flex-col items-center"
         >
-          <h2 className="text-xl font-semibold text-white mb-3">Tech Skills</h2>
+          <h2 className="text-2xl font-semibold mb-3 text-cyan-400">
+            Tech Skills
+          </h2>
 
           <div className="grid grid-cols-3 sm:grid-cols-4 gap-8 place-items-center">
             {skills.map((s, i) => (

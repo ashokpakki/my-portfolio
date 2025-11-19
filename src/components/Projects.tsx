@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-
+import Greeting from "./Greeting";
 export default function Projects() {
   const projects = [
     {
@@ -42,12 +42,16 @@ export default function Projects() {
       className="h-screen w-full bg-black text-white flex flex-col px-6 py-10"
     >
       <br />
-      <br />
-      <br />
-      <h2 className="text-4xl md:text-6xl font-bold mb-10 text-center">
-        Projects
-      </h2>
 
+      <motion.h1
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="text-7xl md:text-8xl font-extrabold mb-6 leading-relaxed text-center bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent animate-gradient cursor-hover"
+      >
+        Projects
+      </motion.h1>
       <div className="flex-1 overflow-x-auto overflow-y-hidden">
         {/* HORIZONTAL 2-ROW AUTO-FLOW GRID */}
         <div
