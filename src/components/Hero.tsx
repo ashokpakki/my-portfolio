@@ -7,7 +7,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="h-screen w-full flex flex-col items-center justify-center bg-black text-white px-6 select-none"
+      className="min-h-screen w-full flex flex-col items-center justify-center bg-black text-white px-6 select-none"
     >
       {/* Main container for fade-in */}
       <motion.div

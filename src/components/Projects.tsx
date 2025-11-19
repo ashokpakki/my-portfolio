@@ -29,16 +29,17 @@ export default function Projects() {
       img: "/images/blogapp.png",
       link: "https://github.com/ashokpakki/Blog-app-main",
     },
-    { title: "Project 5", description: "Small description", img: "" },
+    /*{ title: "Project 5", description: "Small description", img: "" },
     { title: "Project 6", description: "Small description", img: "" },
     { title: "Project 7", description: "Small description", img: "" },
     { title: "Project 8", description: "Small description", img: "" },
+     */
   ];
 
   return (
     <section
       id="projects"
-      className="h-screen w-full bg-black text-white flex flex-col px-6 py-10"
+      className="min-h-screen w-full bg-black text-white flex flex-col px-6 py-10"
     >
       <br />
 
@@ -51,13 +52,15 @@ export default function Projects() {
       >
         Projects
       </motion.h1>
-      <div className="flex-1 overflow-x-auto overflow-y-hidden">
+      <div className=" flex-1 overflow-x-auto overflow-y-hidden">
         {/* HORIZONTAL 2-ROW AUTO-FLOW GRID */}
         <div
           className="
         grid 
-        auto-cols-[550px] 
-        grid-flow-col 
+        grid-cols-1
+        md:auto-cols-[550px] 
+        md:grid-flow-col 
+        md:grid-cols-none
         gap-8 
         px-8 py-6
       "
@@ -67,7 +70,7 @@ export default function Projects() {
               key={i}
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 200 }}
-              className="bg-white/10 border border-white/20 rounded-2xl p-6 w-[500px] h-[400px] flex flex-col justify-between backdrop-blur-md"
+              className="bg-white/10 border border-white/20 rounded-2xl p-6 w-full h-[350px] md:w-[500px] md:h-[400px] flex flex-col justify-between backdrop-blur-md"
             >
               <div className="h-60 bg-white/20 rounded-md flex items-center justify-center text-white/50">
                 <img

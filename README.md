@@ -1,78 +1,82 @@
-<<<<<<< HEAD
-# my-portfolio
-Info related to my activity
-=======
-# React + TypeScript + Vite
+🌐 My Portfolio Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive personal portfolio built using React, Vite, Tailwind CSS, and Framer Motion.
+Showcases my projects, skills, and a bit about who I am. Fully optimized for desktop and mobile.
 
-Currently, two official plugins are available:
+🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+⚡ Fast + Lightweight — Powered by Vite
 
-## React Compiler
+🎨 Beautiful UI — Styled with Tailwind
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+🌀 Smooth Animations — Framer Motion
 
-## Expanding the ESLint configuration
+📱 Fully Responsive — Works on all screens
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+🧩 Modular Components — Clean maintainable structure
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+🌑 Glassmorphism aesthetic
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+🛠 Tech Stack
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Frontend:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+React + Vite
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Tailwind CSS
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
->>>>>>> dc6ad54 (first version)
+Framer Motion
+
+Deployment:
+
+Vercel
+
+📷 Preview
+
+(./public/images/portf.png)
+
+📁 Project Structure
+/
+├── src/
+│ ├── components/
+│ │ ├── Hero.tsx
+│ │ ├── About.tsx
+│ │ ├── Projects.tsx
+│ │ └── Contact.tsx
+│ ├── App.tsx
+│ └── main.tsx
+├── public/
+│ └── images/
+└── README.md
+
+🖥 Running Locally
+
+# clone repo
+
+git clone https://github.com/your-username/your-repo-name
+
+cd your-repo-name
+
+# install packages
+
+npm install
+
+# start dev server
+
+npm run dev
+
+📦 Build for Production
+npm run build
+
+🌍 Live Demo
+
+🔗 https://ashok-pakki.vercel.app
+
+👨‍💻 About Me
+
+Hi, I’m Ashok, a passionate developer from India who loves building clean, minimal, and fast applications.
+Anime enjoyer. Tech enthusiast. Always learning something new.
+
+⭐ If you like this project
+
+Give it a ⭐ on GitHub — it helps a lot!

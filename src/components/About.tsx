@@ -124,7 +124,7 @@ export default function About() {
   return (
     <section
       id="about"
-      className="h-screen w-full bg-black text-white flex flex-col items-center justify-center px-6"
+      className="min-h-screen w-full bg-black text-white flex flex-col items-center justify-center px-6"
     >
       {/* Title */}
       <motion.h2
