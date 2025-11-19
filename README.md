@@ -33,29 +33,15 @@ Vercel
 
 📷 Preview
 
-(./public/images/portf.png)
-
-📁 Project Structure
-/
-├── src/
-│ ├── components/
-│ │ ├── Hero.tsx
-│ │ ├── About.tsx
-│ │ ├── Projects.tsx
-│ │ └── Contact.tsx
-│ ├── App.tsx
-│ └── main.tsx
-├── public/
-│ └── images/
-└── README.md
+![Portfolio Preview](/public/images/portf.png)
 
 🖥 Running Locally
 
 # clone repo
 
-git clone https://github.com/your-username/your-repo-name
+git clone https://github.com/ashokpakki/my-portfolio
 
-cd your-repo-name
+cd my-portfolio
 
 # install packages
 
