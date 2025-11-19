@@ -1,16 +1,20 @@
 import { motion } from "framer-motion";
-const Greeting = ({ text }) => {
+import type { Variants } from "framer-motion";
+
+type GreetingProps = { text: string };
+
+const Greeting = ({ text }: GreetingProps) => {
   const letters = Array.from(text);
 
-  const container = {
+  const container: Variants = {
     hidden: { opacity: 0 },
-    visible: (i = 1) => ({
+    visible: (i: number = 1) => ({
       opacity: 1,
       transition: { staggerChildren: 0.05, delayChildren: 0.05 * i },
     }),
   };
 
-  const child = {
+  const child: Variants = {
     hidden: { y: 50, opacity: 0 },
     visible: {
       y: 0,
