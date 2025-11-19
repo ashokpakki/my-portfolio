@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import Greeting from "./Greeting";
 export default function Projects() {
   const projects = [
     {
