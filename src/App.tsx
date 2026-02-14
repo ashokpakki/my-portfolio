@@ -1,33 +1,32 @@
+import { ThemeProvider } from "./context/ThemeContext";
+import CursorGlow from "./components/CursorGlow";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import About from "./components/About";
+import Skills from "./components/Skills";
 import Projects from "./components/Projects";
 import Contact from "./components/Contact";
+import Footer from "./components/Footer";
 
 export default function App() {
-  return (
-    <div className="bg-black text-white">
-      <Navbar />
+    return (
+        <ThemeProvider>
+            {/* Global cursor spotlight */}
+            <CursorGlow />
 
-      {/* SCROLL SNAP CONTAINER */}
-      <div className="snap-y snap-mandatory h-screen overflow-y-scroll scroll-smooth">
-        {/* EACH SECTION HAS SNAP */}
-        <section className="snap-start">
-          <Hero />
-        </section>
+            {/* Fixed navigation */}
+            <Navbar />
 
-        <section className="snap-start">
-          <About />
-        </section>
+            {/* Main content */}
+            <main>
+                <Hero />
+                <About />
+                <Skills />
+                <Projects />
+                <Contact />
+            </main>
 
-        <section className="snap-start">
-          <Projects />
-        </section>
-
-        <section className="snap-start">
-          <Contact />
-        </section>
-      </div>
-    </div>
-  );
+            <Footer />
+        </ThemeProvider>
+    );
 }
