@@ -35,6 +35,9 @@
     --nav-bg: rgba(0, 0, 0, 0.75);
     --particle-color: 255, 255, 255;
     --accent-particle: 255, 255, 255;
+    --mesh-one: rgba(255, 255, 255, 0.08);
+    --mesh-two: rgba(255, 255, 255, 0.05);
+    --mesh-three: rgba(255, 255, 255, 0.04);
 
     --radius-sm: 8px;
     --radius-md: 12px;
@@ -47,37 +50,40 @@
    DESIGN TOKENS — LIGHT THEME
    ═══════════════════════════════════════════════════════════════ */
 [data-theme="light"] {
-    --bg-primary: #fffbf8;
-    --bg-secondary: #fff5f0;
-    --bg-tertiary: #feeee6;
-    --bg-card: rgba(255, 75, 55, 0.03);
-    --bg-card-hover: rgba(255, 75, 55, 0.06);
+    --bg-primary: #faf8ff;
+    --bg-secondary: #f5f0ff;
+    --bg-tertiary: #ede5ff;
+    --bg-card: rgba(99, 91, 255, 0.04);
+    --bg-card-hover: rgba(99, 91, 255, 0.08);
 
-    --text-primary: #1a1015;
-    --text-secondary: rgba(26, 16, 21, 0.6);
-    --text-tertiary: rgba(26, 16, 21, 0.4);
+    --text-primary: #1a1025;
+    --text-secondary: rgba(26, 16, 37, 0.6);
+    --text-tertiary: rgba(26, 16, 37, 0.4);
 
-    --accent: #e03e2d;
-    --accent-light: #ff6b56;
-    --accent-dark: #c02818;
-    --accent-glow: rgba(224, 62, 45, 0.15);
-    --accent-glow-strong: rgba(224, 62, 45, 0.3);
+    --accent: #635BFF;
+    --accent-light: #EC4899;
+    --accent-dark: #4338CA;
+    --accent-glow: rgba(99, 91, 255, 0.12);
+    --accent-glow-strong: rgba(99, 91, 255, 0.25);
 
-    --border: rgba(224, 62, 45, 0.1);
-    --border-hover: rgba(224, 62, 45, 0.2);
+    --border: rgba(99, 91, 255, 0.1);
+    --border-hover: rgba(99, 91, 255, 0.2);
 
-    --gradient-text: linear-gradient(135deg, #c02818 0%, #e03e2d 30%, #ff6b56 60%, #ff9a76 100%);
-    --gradient-accent: linear-gradient(135deg, #e03e2d, #ff6b56, #ff9a76);
-    --gradient-card-border: linear-gradient(135deg, rgba(224, 62, 45, 0.25), rgba(255, 107, 86, 0.08), rgba(255, 154, 118, 0.25));
+    --gradient-text: linear-gradient(135deg, #4338CA 0%, #635BFF 25%, #EC4899 55%, #F43F5E 85%, #DC2626 100%);
+    --gradient-accent: linear-gradient(135deg, #635BFF, #EC4899, #F43F5E);
+    --gradient-card-border: linear-gradient(135deg, rgba(99, 91, 255, 0.3), rgba(236, 72, 153, 0.1), rgba(244, 63, 94, 0.3));
 
-    --shadow-sm: 0 1px 3px rgba(224, 62, 45, 0.06);
-    --shadow-md: 0 4px 16px rgba(224, 62, 45, 0.06);
-    --shadow-lg: 0 8px 32px rgba(224, 62, 45, 0.08);
+    --shadow-sm: 0 1px 3px rgba(99, 91, 255, 0.06);
+    --shadow-md: 0 4px 16px rgba(99, 91, 255, 0.08);
+    --shadow-lg: 0 8px 32px rgba(99, 91, 255, 0.1);
     --shadow-glow: 0 0 40px var(--accent-glow);
 
-    --nav-bg: rgba(255, 251, 248, 0.8);
-    --particle-color: 26, 16, 21;
-    --accent-particle: 224, 62, 45;
+    --nav-bg: rgba(250, 248, 255, 0.8);
+    --particle-color: 99, 91, 255;
+    --accent-particle: 236, 72, 153;
+    --mesh-one: rgba(99, 91, 255, 0.2);
+    --mesh-two: rgba(236, 72, 153, 0.18);
+    --mesh-three: rgba(244, 63, 94, 0.12);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -220,21 +226,21 @@ body {
 }
 
 .mesh-gradient.one {
-    background: var(--accent);
+    background: var(--mesh-one);
     top: -200px;
     right: -100px;
     animation-delay: 0s;
 }
 
 .mesh-gradient.two {
-    background: #818cf8;
+    background: var(--mesh-two);
     bottom: -200px;
     left: -100px;
     animation-delay: -7s;
 }
 
 .mesh-gradient.three {
-    background: #c084fc;
+    background: var(--mesh-three);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);

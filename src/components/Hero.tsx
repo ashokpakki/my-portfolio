@@ -99,8 +99,8 @@ export default function Hero() {
                                 width: 8,
                                 height: 8,
                                 borderRadius: "50%",
-                                background: "#22c55e",
-                                boxShadow: "0 0 8px rgba(34, 197, 94, 0.5)",
+                                background: "var(--accent)",
+                                boxShadow: "0 0 8px var(--accent-glow-strong)",
                             }}
                         />
                         Available for Opportunities
@@ -111,7 +111,7 @@ export default function Hero() {
                 <motion.h1
                     variants={fadeUp}
                     style={{
-                        fontSize: "clamp(3rem, 8vw, 5.5rem)",
+                        fontSize: "clamp(5rem, 20vw, 8rem)",
                         fontWeight: 900,
                         lineHeight: 1.05,
                         letterSpacing: "-0.03em",

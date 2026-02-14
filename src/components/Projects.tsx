@@ -1,7 +1,5 @@
-import { useRef, useEffect } from "react";
-import { motion } from "framer-motion";
-import SectionReveal, { StaggerContainer, StaggerItem } from "./SectionReveal";
-import VanillaTilt from "vanilla-tilt";
+import { useRef } from "react";
+import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 
 const projects = [
     {
@@ -15,7 +13,7 @@ const projects = [
     {
         title: "Blog App",
         description:
-            "A full-featured blogging platform with a minimal, distraction-free writing experience. Users can create, edit, and publish posts with rich text formatting. Built with a focus on smooth content management, organized categories, and responsive design across all devices.",
+            "A full-featured blogging platform with a minimal, distraction-free writing experience. Users can create, edit, and publish posts with rich text formatting. Built with a focus on smooth content management and responsive design.",
         img: "/images/blogapp.png",
         link: "https://github.com/ashokpakki/Blog-app-main",
         tags: ["React", "Express", "MongoDB", "REST API"],
@@ -23,7 +21,7 @@ const projects = [
     {
         title: "BlackJack Game",
         description:
-            "A complete implementation of the classic card game in Java. Features realistic game logic including hit, stand, double-down mechanics, and dealer AI. Demonstrates strong object-oriented design patterns, clean code architecture, and comprehensive game state management.",
+            "A complete implementation of the classic card game in Java. Features realistic game logic including hit, stand, double-down mechanics, and dealer AI with strong object-oriented design patterns.",
         img: "/images/blackjack.png",
         link: "https://github.com/ashokpakki/Blackjack",
         tags: ["Java", "OOP", "Game Logic"],
@@ -31,243 +29,238 @@ const projects = [
     {
         title: "Quote Generator",
         description:
-            "A beautifully simple tool that surfaces curated inspirational quotes with a single click. Features smooth animations, a thoughtful color palette that changes with each quote, and share-to-social functionality. Built as an exercise in micro-interactions and delightful UX.",
+            "A beautifully simple tool that surfaces curated inspirational quotes with a single click. Features smooth animations, a thoughtful color palette, and share-to-social functionality.",
         img: "/images/ran.png",
         link: "https://github.com/ashokpakki/ran",
         tags: ["JavaScript", "CSS Animations", "API"],
     },
 ];
 
-function TiltCard({ children }: { children: React.ReactNode }) {
-    const tiltRef = useRef<HTMLDivElement>(null);
+const TOTAL_SEGS = projects.length + 1; // +1 for closing
 
-    useEffect(() => {
-        const el = tiltRef.current;
-        if (!el) return;
+/* ─── Left: crossfading text ──────────────────────────────── */
+function ProjectText({
+    project, index, progress,
+}: {
+    project: (typeof projects)[number]; index: number; progress: MotionValue<number>;
+}) {
+    const s = index / TOTAL_SEGS;
+    const e = (index + 1) / TOTAL_SEGS;
+    const fadeIn = s + 0.2 / TOTAL_SEGS;
+    const fadeOut = e - 0.2 / TOTAL_SEGS;
 
-        // Only tilt on desktop
-        if (window.innerWidth < 768) return;
-
-        VanillaTilt.init(el, {
-            max: 8,
-            speed: 300,
-            glare: true,
-            "max-glare": 0.15,
-            perspective: 1000,
-        });
-
-        return () => {
-            (el as any)?.vanillaTilt?.destroy();
-        };
-    }, []);
+    const opacity = useTransform(progress, [s, fadeIn, fadeOut, e], [0, 1, 1, 0]);
+    const y = useTransform(progress, [s, fadeIn, fadeOut, e], [60, 0, 0, -60]);
 
     return (
-        <div ref={tiltRef} className="tilt-card" style={{ transformStyle: "preserve-3d" }}>
-            {children}
+        <motion.div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "center", opacity, y }}>
+            <span style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--accent)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 20 }}>
+                {String(index + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
+            </span>
+            <h3 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.15, marginBottom: 16, color: "var(--text-primary)" }}>
+                {project.title}
+            </h3>
+            <p style={{ fontSize: "1rem", lineHeight: 1.75, color: "var(--text-secondary)", marginBottom: 24, maxWidth: 480 }}>
+                {project.description}
+            </p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 28 }}>
+                {project.tags.map((tag) => (
+                    <span key={tag} style={{ fontSize: "0.75rem", fontWeight: 500, padding: "5px 14px", borderRadius: "var(--radius-full)", background: "var(--accent-glow)", color: "var(--accent)", letterSpacing: "0.03em" }}>
+                        {tag}
+                    </span>
+                ))}
+            </div>
+            <a href={project.link} target="_blank" rel="noopener noreferrer"
+                style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: "0.9rem", fontWeight: 600, color: "var(--accent)", textDecoration: "none", transition: "gap 0.3s" }}
+                onMouseEnter={(e) => (e.currentTarget.style.gap = "14px")}
+                onMouseLeave={(e) => (e.currentTarget.style.gap = "8px")}
+            >
+                View Project
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+            </a>
+        </motion.div>
+    );
+}
+
+/* ─── Right: 3D card — subtle tilt, fills folder ──────────── */
+function ProjectCard({
+    project, index, progress,
+}: {
+    project: (typeof projects)[number]; index: number; progress: MotionValue<number>;
+}) {
+    const s = index / TOTAL_SEGS;
+    const e = (index + 1) / TOTAL_SEGS;
+    const after = Math.min(e + 0.08, 1);
+
+    // Subtle playing-card fan: slight rotation + small offset
+    const stackRotateZ = index * -1.5;
+    const stackOffsetX = index * -4;
+
+    // Gentle tilt: -15° is subtle, not steep
+    const rotateX = useTransform(progress, [s, e, after], [-15, 0, -1.5]);
+    // Rise from below
+    const cardY = useTransform(progress, [s, e], [180, 0]);
+    const opacity = useTransform(progress, [Math.max(s - 0.01, 0), s + 0.04], [0, 1]);
+    // Scale: start at 0.95, land at 1, stay at 1 when stacked (no shrinking!)
+    const scale = useTransform(progress, [s, e], [0.95, 1]);
+    // Fan rotation only after stacking
+    const rotateZ = useTransform(progress, [s, e, after], [0, 0, stackRotateZ]);
+    const x = useTransform(progress, [s, e, after], [0, 0, stackOffsetX]);
+
+    return (
+        <motion.div
+            style={{
+                position: "absolute",
+                /* Cards fill 90% of folder, centered */
+                top: "5%", left: "5%", width: "90%", height: "90%",
+                rotateX, rotateZ, opacity, scale, y: cardY, x,
+                zIndex: index,
+                transformOrigin: "center bottom",
+            }}
+        >
+            <div style={{ width: "100%", height: "100%", borderRadius: "var(--radius-md)", overflow: "hidden", border: "1px solid var(--border-hover)", boxShadow: "0 12px 40px rgba(0,0,0,0.25), 0 4px 12px rgba(0,0,0,0.15)", background: "var(--bg-secondary)" }}>
+                <img src={project.img} alt={project.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+            </div>
+        </motion.div>
+    );
+}
+
+/* ─── Folder cover — horizontal, matches folder shape ─────── */
+function FolderCover({ progress }: { progress: MotionValue<number> }) {
+    const n = projects.length;
+    const s = n / TOTAL_SEGS;
+    const mid = s + (1 - s) * 0.5;
+
+    const rotateX = useTransform(progress, [s, mid], [45, 0]);
+    const coverY = useTransform(progress, [s, mid], [-150, 0]);
+    const opacity = useTransform(progress, [s, s + 0.03], [0, 1]);
+
+    return (
+        <motion.div
+            style={{
+                position: "absolute",
+                /* Match the folder exactly — full width, full height */
+                inset: 0,
+                rotateX, y: coverY, opacity,
+                zIndex: n + 1,
+                transformOrigin: "center top",
+            }}
+        >
+            <div
+                style={{
+                    width: "100%", height: "100%",
+                    borderRadius: "var(--radius-lg)",
+                    border: "1px solid var(--border-hover)",
+                    background: "var(--bg-tertiary)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    gap: 16,
+                }}
+            >
+                <span style={{ fontSize: "1.5rem", opacity: 0.3 }}>📁</span>
+                <span style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--text-tertiary)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                    {n} Projects
+                </span>
+            </div>
+        </motion.div>
+    );
+}
+
+/* ─── Folder tabs ─────────────────────────────────────────── */
+function FolderTabs({ progress }: { progress: MotionValue<number> }) {
+    return (
+        <div style={{ display: "flex", gap: 0, marginBottom: -1, position: "relative", zIndex: 2, paddingLeft: 12 }}>
+            {projects.map((p, i) => (
+                <FolderTab key={i} label={p.title} index={i} progress={progress} />
+            ))}
         </div>
     );
 }
 
-export default function Projects() {
+function FolderTab({ label, index, progress }: { label: string; index: number; progress: MotionValue<number> }) {
+    const s = index / TOTAL_SEGS;
+    const mid = s + 0.1 / TOTAL_SEGS;
+    const opacity = useTransform(progress, [Math.max(s - 0.02, 0), mid], [0.35, 1]);
+    const bg = useTransform(progress, [Math.max(s - 0.02, 0), mid], ["transparent", "var(--bg-card-hover)"]);
+
     return (
-        <section id="projects" className="section-padding" style={{ position: "relative" }}>
-            <div className="mesh-gradient one" style={{ opacity: 0.1 }} />
+        <motion.div
+            style={{
+                padding: "8px 16px", fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.04em",
+                color: "var(--text-secondary)", opacity, background: bg,
+                borderRadius: "var(--radius-sm) var(--radius-sm) 0 0",
+                border: "1px solid var(--border)", borderBottom: "none", whiteSpace: "nowrap",
+            }}
+        >
+            <span style={{ opacity: 0.6 }}>{String(index + 1).padStart(2, "0")}</span> {label}
+        </motion.div>
+    );
+}
 
-            <div className="section-container">
-                {/* Section Header */}
-                <SectionReveal>
-                    <div style={{ textAlign: "center", marginBottom: 64 }}>
-                        <p
-                            style={{
-                                fontSize: "0.85rem",
-                                fontWeight: 600,
-                                color: "var(--accent)",
-                                letterSpacing: "0.15em",
-                                textTransform: "uppercase",
-                                marginBottom: 12,
-                            }}
-                        >
-                            Featured Work
-                        </p>
-                        <h2
-                            className="gradient-text"
-                            style={{
-                                fontSize: "clamp(2rem, 5vw, 3.2rem)",
-                                fontWeight: 800,
-                                letterSpacing: "-0.02em",
-                                lineHeight: 1.15,
-                                marginBottom: 20,
-                            }}
-                        >
-                            Projects I've built
-                        </h2>
-                        <p
-                            style={{
-                                fontSize: "1.05rem",
-                                lineHeight: 1.8,
-                                color: "var(--text-secondary)",
-                                maxWidth: 650,
-                                margin: "0 auto",
-                            }}
-                        >
-                            Each project represents a problem I wanted to solve. From AI-powered
-                            writing tools to classic game implementations — every line of code is
-                            written with intention and care.
-                        </p>
-                    </div>
-                </SectionReveal>
+/* ─── Main section ────────────────────────────────────────── */
+export default function Projects() {
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const n = projects.length;
 
-                {/* Project Grid */}
-                <StaggerContainer
-                    staggerDelay={0.12}
-                    className=""
-                >
-                    <div
+    const { scrollYProgress } = useScroll({
+        target: scrollRef,
+        offset: ["start start", "end end"],
+    });
+
+    // Closing: folder zooms + fades after cover lands
+    const closeStart = n / TOTAL_SEGS;
+    const closeMid = closeStart + (1 - closeStart) * 0.5;
+    const folderScale = useTransform(scrollYProgress, [closeMid, 1], [1, 1.3]);
+    const folderOpacity = useTransform(scrollYProgress, [closeMid, 1], [1, 0]);
+
+    return (
+        <section id="projects" style={{ position: "relative" }}>
+            {/* The entire scroll-tracked area — header is INSIDE sticky so it never leaves */}
+            <div ref={scrollRef} style={{ height: `${(TOTAL_SEGS + 1) * 100}vh`, position: "relative" }}>
+                <div style={{ position: "sticky", top: 0, height: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" }}>
+                    <motion.div
                         style={{
-                            display: "grid",
-                            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 500px), 1fr))",
-                            gap: 32,
+                            maxWidth: 1200, margin: "0 auto", padding: "0 40px", width: "100%",
+                            scale: folderScale, opacity: folderOpacity,
                         }}
                     >
-                        {projects.map((p, i) => (
-                            <StaggerItem key={i}>
-                                <TiltCard>
-                                    <motion.div
-                                        className="card-gradient-border"
-                                        whileHover={{ y: -4 }}
-                                        transition={{ duration: 0.3 }}
-                                        style={{
-                                            overflow: "hidden",
-                                            cursor: "pointer",
-                                        }}
-                                        onClick={() => window.open(p.link, "_blank")}
-                                    >
-                                        {/* Image container */}
-                                        <div
-                                            style={{
-                                                position: "relative",
-                                                overflow: "hidden",
-                                                height: 240,
-                                            }}
-                                        >
-                                            <motion.img
-                                                src={p.img}
-                                                alt={p.title}
-                                                whileHover={{ scale: 1.08 }}
-                                                transition={{ duration: 0.5 }}
-                                                style={{
-                                                    width: "100%",
-                                                    height: "100%",
-                                                    objectFit: "cover",
-                                                    display: "block",
-                                                }}
-                                            />
-                                            {/* Gradient overlay */}
-                                            <div
-                                                style={{
-                                                    position: "absolute",
-                                                    inset: 0,
-                                                    background:
-                                                        "linear-gradient(to top, var(--bg-primary) 0%, transparent 50%)",
-                                                    pointerEvents: "none",
-                                                }}
-                                            />
-                                        </div>
+                        {/* Section header — always visible inside sticky */}
+                        <div style={{ textAlign: "center", marginBottom: 40 }}>
+                            <p style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--accent)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 8 }}>Featured Work</p>
+                            <h2 className="gradient-text" style={{ fontSize: "clamp(2rem, 5vw, 3.2rem)", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.15 }}>
+                                Projects I've built
+                            </h2>
+                        </div>
 
-                                        {/* Content */}
-                                        <div style={{ padding: "24px 28px 28px", transform: "translateZ(30px)" }}>
-                                            <h3
-                                                style={{
-                                                    fontSize: "1.2rem",
-                                                    fontWeight: 700,
-                                                    marginBottom: 10,
-                                                    letterSpacing: "-0.01em",
-                                                }}
-                                            >
-                                                {p.title}
-                                            </h3>
-                                            <p
-                                                style={{
-                                                    fontSize: "0.88rem",
-                                                    lineHeight: 1.7,
-                                                    color: "var(--text-secondary)",
-                                                    marginBottom: 16,
-                                                }}
-                                            >
-                                                {p.description}
-                                            </p>
+                        {/* Split layout */}
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.4fr", gap: 48, alignItems: "center" }}>
+                            {/* Left: text */}
+                            <div style={{ position: "relative", minHeight: 350 }}>
+                                {projects.map((p, i) => (
+                                    <ProjectText key={i} project={p} index={i} progress={scrollYProgress} />
+                                ))}
+                            </div>
 
-                                            {/* Tags */}
-                                            <div
-                                                style={{
-                                                    display: "flex",
-                                                    flexWrap: "wrap",
-                                                    gap: 8,
-                                                    marginBottom: 16,
-                                                }}
-                                            >
-                                                {p.tags.map((tag) => (
-                                                    <span
-                                                        key={tag}
-                                                        style={{
-                                                            fontSize: "0.72rem",
-                                                            fontWeight: 500,
-                                                            padding: "4px 12px",
-                                                            borderRadius: "var(--radius-full)",
-                                                            background: "var(--accent-glow)",
-                                                            color: "var(--accent-light)",
-                                                            letterSpacing: "0.03em",
-                                                        }}
-                                                    >
-                                                        {tag}
-                                                    </span>
-                                                ))}
-                                            </div>
-
-                                            {/* Link */}
-                                            <a
-                                                href={p.link}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                onClick={(e) => e.stopPropagation()}
-                                                style={{
-                                                    display: "inline-flex",
-                                                    alignItems: "center",
-                                                    gap: 6,
-                                                    fontSize: "0.85rem",
-                                                    fontWeight: 600,
-                                                    color: "var(--accent-light)",
-                                                    textDecoration: "none",
-                                                    transition: "gap 0.3s",
-                                                }}
-                                                onMouseEnter={(e) => {
-                                                    e.currentTarget.style.gap = "10px";
-                                                }}
-                                                onMouseLeave={(e) => {
-                                                    e.currentTarget.style.gap = "6px";
-                                                }}
-                                            >
-                                                View Project
-                                                <svg
-                                                    width="16"
-                                                    height="16"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    strokeWidth="2.5"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                >
-                                                    <path d="M5 12h14M12 5l7 7-7 7" />
-                                                </svg>
-                                            </a>
-                                        </div>
-                                    </motion.div>
-                                </TiltCard>
-                            </StaggerItem>
-                        ))}
-                    </div>
-                </StaggerContainer>
+                            {/* Right: folder + cards */}
+                            <div>
+                                <FolderTabs progress={scrollYProgress} />
+                                <div
+                                    style={{
+                                        position: "relative", aspectRatio: "4 / 3",
+                                        border: "1px solid var(--border-hover)",
+                                        borderRadius: "0 var(--radius-lg) var(--radius-lg) var(--radius-lg)",
+                                        background: "var(--bg-card)", perspective: 1200,
+                                        overflow: "hidden",
+                                    }}
+                                >
+                                    {projects.map((p, i) => (
+                                        <ProjectCard key={i} project={p} index={i} progress={scrollYProgress} />
+                                    ))}
+                                    <FolderCover progress={scrollYProgress} />
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
             </div>
         </section>
     );
