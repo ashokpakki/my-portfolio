@@ -50,40 +50,45 @@
    DESIGN TOKENS — LIGHT THEME
    ═══════════════════════════════════════════════════════════════ */
 [data-theme="light"] {
-    --bg-primary: #faf8ff;
-    --bg-secondary: #f5f0ff;
-    --bg-tertiary: #ede5ff;
-    --bg-card: rgba(99, 91, 255, 0.04);
-    --bg-card-hover: rgba(99, 91, 255, 0.08);
+    --bg-primary: #ffffff;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f4f4f5;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f4f4f5;
 
-    --text-primary: #1a1025;
-    --text-secondary: rgba(26, 16, 37, 0.6);
-    --text-tertiary: rgba(26, 16, 37, 0.4);
+    --text-primary: #09090b;
+    --text-secondary: #52525b;
+    --text-tertiary: #a1a1aa;
 
+    --accent: #000000;
+    /* Minimalist black accent for high contrast or keep colored? User said "clean minimalist". Black is safest for minimalism, but let's keep the brand color but maybe darker/sharper? Or just go monochrome? User said "make the background to pure white... remove blue gradient". They didn't say remove accent color. I'll keep accent but make sure background is white. */
     --accent: #635BFF;
-    --accent-light: #EC4899;
-    --accent-dark: #4338CA;
-    --accent-glow: rgba(99, 91, 255, 0.12);
-    --accent-glow-strong: rgba(99, 91, 255, 0.25);
+    --accent-light: #818cf8;
+    --accent-dark: #4f46e5;
+    --accent-glow: rgba(99, 91, 255, 0.05);
+    /* Very subtle */
+    --accent-glow-strong: rgba(99, 91, 255, 0.15);
 
-    --border: rgba(99, 91, 255, 0.1);
-    --border-hover: rgba(99, 91, 255, 0.2);
+    --border: #e4e4e7;
+    --border-hover: #d4d4d8;
 
-    --gradient-text: linear-gradient(135deg, #4338CA 0%, #635BFF 25%, #EC4899 55%, #F43F5E 85%, #DC2626 100%);
-    --gradient-accent: linear-gradient(135deg, #635BFF, #EC4899, #F43F5E);
-    --gradient-card-border: linear-gradient(135deg, rgba(99, 91, 255, 0.3), rgba(236, 72, 153, 0.1), rgba(244, 63, 94, 0.3));
+    --gradient-text: linear-gradient(135deg, #000000 0%, #444444 100%);
+    /* Simpler gradient or just black? Let's go with a strong dark gradient */
+    --gradient-accent: linear-gradient(135deg, #635BFF, #4F46E5);
+    --gradient-card-border: linear-gradient(135deg, #e4e4e7, #ffffff, #e4e4e7);
 
-    --shadow-sm: 0 1px 3px rgba(99, 91, 255, 0.06);
-    --shadow-md: 0 4px 16px rgba(99, 91, 255, 0.08);
-    --shadow-lg: 0 8px 32px rgba(99, 91, 255, 0.1);
-    --shadow-glow: 0 0 40px var(--accent-glow);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    --shadow-glow: 0 0 20px rgba(99, 91, 255, 0.1);
 
-    --nav-bg: rgba(250, 248, 255, 0.8);
-    --particle-color: 99, 91, 255;
-    --accent-particle: 236, 72, 153;
-    --mesh-one: rgba(99, 91, 255, 0.2);
-    --mesh-two: rgba(236, 72, 153, 0.18);
-    --mesh-three: rgba(244, 63, 94, 0.12);
+    --nav-bg: rgba(255, 255, 255, 0.85);
+    --particle-color: 0, 0, 0;
+    /* Unused now but kept for safety */
+    --accent-particle: 0, 0, 0;
+    --mesh-one: transparent;
+    --mesh-two: transparent;
+    --mesh-three: transparent;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -554,11 +559,9 @@ body {
 [data-theme="light"] .folder-body {
     border-color: var(--border-hover);
     box-shadow:
-        0 8px 40px rgba(99, 91, 255, 0.08),
-        0 2px 12px rgba(99, 91, 255, 0.05),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(12px);
+        0 8px 40px rgba(0, 0, 0, 0.04),
+        0 2px 12px rgba(0, 0, 0, 0.02);
+    background: #ffffff;
 }
 
 /* Folder tab — trapezoid shape */
@@ -617,9 +620,9 @@ body {
 
 [data-theme="light"] .project-card-image {
     box-shadow:
-        0 16px 48px rgba(99, 91, 255, 0.1),
-        0 4px 16px rgba(0, 0, 0, 0.06);
-    border-color: rgba(99, 91, 255, 0.15);
+        0 16px 48px rgba(0, 0, 0, 0.08),
+        0 4px 16px rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.05);
 }
 
 .project-card-image img {
@@ -631,13 +634,7 @@ body {
 
 /* Light mode gradient overlay for projects section */
 [data-theme="light"] .projects-light-gradient {
-    position: absolute;
-    inset: 0;
-    background:
-        radial-gradient(ellipse 80% 60% at 20% 40%, rgba(99, 91, 255, 0.06), transparent),
-        radial-gradient(ellipse 60% 80% at 80% 60%, rgba(236, 72, 153, 0.04), transparent);
-    pointer-events: none;
-    z-index: 0;
+    display: none;
 }
 
 /* Project text dramatic transitions */
@@ -676,12 +673,9 @@ body {
 }
 
 [data-theme="light"] .folder-cover {
-    background:
-        linear-gradient(135deg, rgba(245, 240, 255, 0.95), rgba(237, 229, 255, 0.98));
-    border-color: rgba(99, 91, 255, 0.2);
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.8),
-        0 8px 32px rgba(99, 91, 255, 0.08);
+    background: #ffffff;
+    border-color: var(--border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
 }
 
 /* CTA link styling */

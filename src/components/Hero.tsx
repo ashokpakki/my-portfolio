@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { SiLinkedin, SiGithub, SiLeetcode } from "react-icons/si";
 import { HiOutlineMail } from "react-icons/hi";
 import { HiMapPin } from "react-icons/hi2";
-import ParticleCanvas from "./ParticleCanvas";
+
 
 const socials = [
     {
@@ -57,10 +57,9 @@ export default function Hero() {
                 overflow: "hidden",
             }}
         >
-            {/* Particle Background */}
-            <ParticleCanvas />
+            {/* Particle Background - REMOVED for performance and minimalism */}
 
-            {/* Gradient mesh blobs */}
+            {/* Gradient mesh blobs - Keep for dark mode, will handle visibility in CSS */}
             <div className="mesh-gradient one" />
             <div className="mesh-gradient two" />
 
