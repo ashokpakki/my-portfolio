@@ -3,7 +3,6 @@ import { SiLinkedin, SiGithub, SiLeetcode } from "react-icons/si";
 import { HiOutlineMail } from "react-icons/hi";
 import { HiMapPin } from "react-icons/hi2";
 
-
 const socials = [
     {
         icon: <SiGithub size={18} />,
@@ -57,12 +56,6 @@ export default function Hero() {
                 overflow: "hidden",
             }}
         >
-            {/* Particle Background - REMOVED for performance and minimalism */}
-
-            {/* Gradient mesh blobs - Keep for dark mode, will handle visibility in CSS */}
-            <div className="mesh-gradient one" />
-            <div className="mesh-gradient two" />
-
             {/* Content */}
             <motion.div
                 variants={container}
@@ -89,24 +82,26 @@ export default function Hero() {
                             background: "var(--bg-card)",
                             fontSize: "0.85rem",
                             fontWeight: 500,
-                            color: "var(--accent-light)",
+                            color: "var(--accent)",
                             letterSpacing: "0.03em",
                         }}
                     >
                         <span
+                            className="status-dot"
                             style={{
                                 width: 8,
                                 height: 8,
                                 borderRadius: "50%",
                                 background: "var(--accent)",
-                                boxShadow: "0 0 8px var(--accent-glow-strong)",
+                                boxShadow: "0 0 12px var(--accent-glow-strong)",
+                                animation: "pulse-glow 2s ease-in-out infinite",
                             }}
                         />
                         Available for Opportunities
                     </span>
                 </motion.div>
 
-                {/* Name */}
+                {/* Name with depth/shadow for dark mode */}
                 <motion.h1
                     variants={fadeUp}
                     style={{
@@ -172,7 +167,7 @@ export default function Hero() {
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={s.label}
-                            whileHover={{ y: -3, boxShadow: "0 0 20px var(--accent-glow)" }}
+                            whileHover={{ y: -3, boxShadow: "0 0 24px var(--accent-glow)" }}
                             whileTap={{ scale: 0.95 }}
                             style={{
                                 display: "inline-flex",
@@ -186,10 +181,10 @@ export default function Hero() {
                                 textDecoration: "none",
                                 fontSize: "0.85rem",
                                 fontWeight: 500,
-                                transition: "color 0.3s, border-color 0.3s",
+                                transition: "color 0.3s ease, border-color 0.3s ease",
                             }}
                             onMouseEnter={(e) => {
-                                e.currentTarget.style.color = "var(--text-primary)";
+                                e.currentTarget.style.color = "var(--accent)";
                                 e.currentTarget.style.borderColor = "var(--accent)";
                             }}
                             onMouseLeave={(e) => {
@@ -204,7 +199,7 @@ export default function Hero() {
                 </motion.div>
             </motion.div>
 
-            {/* Scroll indicator */}
+            {/* Scroll indicator — thin growing line */}
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -219,28 +214,32 @@ export default function Hero() {
                     alignItems: "center",
                     gap: 8,
                     color: "var(--text-tertiary)",
-                    fontSize: "0.75rem",
-                    letterSpacing: "0.1em",
+                    fontSize: "0.7rem",
+                    letterSpacing: "0.15em",
                     textTransform: "uppercase",
                 }}
             >
                 <span>Scroll</span>
                 <motion.div
-                    animate={{ y: [0, 8, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                >
-                    <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                    >
-                        <path d="M12 5v14M19 12l-7 7-7-7" />
-                    </svg>
-                </motion.div>
+                    style={{
+                        width: 1,
+                        height: 24,
+                        background: "var(--accent)",
+                        borderRadius: 1,
+                        transformOrigin: "top",
+                    }}
+                    animate={{ scaleY: [0, 1, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                />
             </motion.div>
+
+            {/* Pulse glow keyframe — inlined since it's compact */}
+            <style>{`
+                @keyframes pulse-glow {
+                    0%, 100% { box-shadow: 0 0 8px var(--accent-glow); }
+                    50% { box-shadow: 0 0 18px var(--accent-glow-strong); }
+                }
+            `}</style>
         </section>
     );
 }

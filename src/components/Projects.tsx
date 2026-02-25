@@ -1,11 +1,10 @@
-import { useRef, useEffect, useCallback } from "react";
+import { useRef } from "react";
 import {
     motion,
     useScroll,
     useTransform,
     type MotionValue,
 } from "framer-motion";
-import { useTheme } from "../context/ThemeContext";
 
 /* ═══════════════════════════════════════════════════════════════
    PROJECT DATA
@@ -60,123 +59,15 @@ const projects = [
    Each segment occupies 1/TOTAL_SEGS of the progress range.
    ═══════════════════════════════════════════════════════════════ */
 const N = projects.length;
-const TOTAL_SEGS = N + 3; // folder-open + N cards + cover-close + zoom-out
-const SEG = 1 / TOTAL_SEGS; // normalized width of one segment
+const TOTAL_SEGS = N + 3;
+const SEG = 1 / TOTAL_SEGS;
 
-/** Returns [start, end] of segment `i` in [0,1] range */
 function seg(i: number): [number, number] {
     return [i * SEG, (i + 1) * SEG];
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   STARRY BACKGROUND (canvas, dark mode only)
-   Lightweight: draws ~200 static dots + 40 twinkling dots.
-   No particle library. No heavy animation loop.
-   ═══════════════════════════════════════════════════════════════ */
-function StarryBackground() {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const { theme } = useTheme();
-    const frameRef = useRef<number>(0);
-
-    const draw = useCallback(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return;
-
-        const dpr = window.devicePixelRatio || 1;
-        const w = canvas.clientWidth;
-        const h = canvas.clientHeight;
-        canvas.width = w * dpr;
-        canvas.height = h * dpr;
-        ctx.scale(dpr, dpr);
-
-        // Static stars — seeded from dimensions for consistency
-        const staticStars: { x: number; y: number; r: number; a: number }[] = [];
-        const twinklers: { x: number; y: number; r: number; speed: number; phase: number }[] = [];
-
-        // Pseudo-random from seed
-        let seed = 42;
-        const rand = () => {
-            seed = (seed * 16807) % 2147483647;
-            return (seed - 1) / 2147483646;
-        };
-
-        const isMobile = window.innerWidth < 768;
-        const starCount = isMobile ? 60 : 180;
-        const twinklerCount = isMobile ? 10 : 35;
-
-        for (let i = 0; i < starCount; i++) {
-            staticStars.push({
-                x: rand() * w,
-                y: rand() * h,
-                r: rand() * 1.2 + 0.3,
-                a: rand() * 0.4 + 0.1,
-            });
-        }
-        for (let i = 0; i < twinklerCount; i++) {
-            twinklers.push({
-                x: rand() * w,
-                y: rand() * h,
-                r: rand() * 1.5 + 0.5,
-                speed: rand() * 0.02 + 0.005,
-                phase: rand() * Math.PI * 2,
-            });
-        }
-
-        let time = 0;
-        const animate = () => {
-            ctx.clearRect(0, 0, w, h);
-            // Static
-            for (const s of staticStars) {
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255,255,255,${s.a})`;
-                ctx.fill();
-            }
-            // Twinklers
-            for (const t of twinklers) {
-                const alpha = 0.15 + 0.5 * (0.5 + 0.5 * Math.sin(time * t.speed * 60 + t.phase));
-                ctx.beginPath();
-                ctx.arc(t.x, t.y, t.r, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255,255,255,${alpha})`;
-                ctx.fill();
-            }
-            time++;
-            frameRef.current = requestAnimationFrame(animate);
-        };
-        animate();
-    }, []);
-
-    useEffect(() => {
-        if (theme === "light") return;
-        draw();
-        const handleResize = () => {
-            cancelAnimationFrame(frameRef.current);
-            draw();
-        };
-        window.addEventListener("resize", handleResize);
-        return () => {
-            cancelAnimationFrame(frameRef.current);
-            window.removeEventListener("resize", handleResize);
-        };
-    }, [theme, draw]);
-
-    if (theme === "light") return null;
-
-    return (
-        <canvas
-            ref={canvasRef}
-            className="projects-starry-canvas"
-            style={{ width: "100%", height: "100%" }}
-        />
-    );
-}
-
-/* ═══════════════════════════════════════════════════════════════
    LEFT SIDE — Project text with dramatic crossfade
-   Each project text occupies seg 1..N (offset by 1 because seg 0
-   is the folder-open animation). Text appears as its card enters.
    ═══════════════════════════════════════════════════════════════ */
 function ProjectText({
     project,
@@ -187,11 +78,9 @@ function ProjectText({
     index: number;
     progress: MotionValue<number>;
 }) {
-    // This text corresponds to card segment (index + 1)
     const [s, e] = seg(index + 1);
-    // Dramatic: fast opacity drop + vertical shift
-    const entryDur = SEG * 0.20; // 20% of segment for entry
-    const exitDur = SEG * 0.15;  // 15% of segment for exit — snappy
+    const entryDur = SEG * 0.20;
+    const exitDur = SEG * 0.15;
 
     const opacity = useTransform(
         progress,
@@ -280,6 +169,7 @@ function ProjectText({
                             background: "var(--accent-glow)",
                             color: "var(--accent)",
                             letterSpacing: "0.03em",
+                            border: "1px solid var(--border)",
                         }}
                     >
                         {tag}
@@ -313,9 +203,7 @@ function ProjectText({
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   PROJECT CARD — rises from bottom, rotates from -30° to 0°,
-   stacks inside folder. No shrinking. No disappearing.
-   Each card occupies Seg (index + 1).
+   PROJECT CARD — rises from bottom, rotates, stacks inside folder
    ═══════════════════════════════════════════════════════════════ */
 function ProjectCard({
     project,
@@ -327,19 +215,16 @@ function ProjectCard({
     progress: MotionValue<number>;
 }) {
     const [s, e] = seg(index + 1);
-    const mid = s + (e - s) * 0.65; // 65% through segment: card lands flat
+    const mid = s + (e - s) * 0.65;
 
-    // Subtle fan offset per stacked card (playing-card illusion)
-    const fanRotateZ = index * -1.8;  // slight rotation per card
-    const fanOffsetX = index * -5;    // slight horizontal offset
-    const fanOffsetY = index * -3;    // slight vertical offset
+    const fanRotateZ = index * -1.8;
+    const fanOffsetX = index * -5;
+    const fanOffsetY = index * -3;
 
-    // Entry: rise from 350px below at -30° tilt, rotate to 0° (used in finalRotateX below)
     const cardY = useTransform(progress, [s, mid], [350, 0]);
     const opacity = useTransform(progress, [s, s + SEG * 0.15], [0, 1]);
     const scale = useTransform(progress, [s, mid], [0.92, 1]);
 
-    // After landing: apply fan offset for stacking illusion
     const afterSettle = Math.min(e, 1);
     const rotateZ = useTransform(
         progress,
@@ -357,7 +242,6 @@ function ProjectCard({
         [0, 0, fanOffsetY]
     );
 
-    // After card settles, slight residual tilt for realism
     const finalRotateX = useTransform(
         progress,
         [s, mid, afterSettle],
@@ -368,7 +252,6 @@ function ProjectCard({
         <motion.div
             style={{
                 position: "absolute",
-                /* Card fills ~90% of folder, centered */
                 top: "5%",
                 left: "5%",
                 width: "90%",
@@ -398,7 +281,6 @@ function ProjectCard({
 
 /* ═══════════════════════════════════════════════════════════════
    FOLDER COVER — closes over stacked cards (Seg N+1)
-   Rises from bottom, rotates -30° → -10° → 0°
    ═══════════════════════════════════════════════════════════════ */
 function FolderCoverCard({
     progress,
@@ -408,7 +290,6 @@ function FolderCoverCard({
     const [s, e] = seg(N + 1);
     const mid = s + (e - s) * 0.6;
 
-    // Rise from below, rotate closed
     const rotateX = useTransform(progress, [s, mid, e], [-30, -10, 0]);
     const coverY = useTransform(progress, [s, mid], [300, 0]);
     const opacity = useTransform(progress, [s, s + SEG * 0.15], [0, 1]);
@@ -446,7 +327,6 @@ function FolderCoverCard({
 
 /* ═══════════════════════════════════════════════════════════════
    ACTIVE FOLDER TAB — updates per active project
-   Shows current project name, clickable → opens link
    ═══════════════════════════════════════════════════════════════ */
 function ActiveFolderTab({
     progress,
@@ -479,7 +359,6 @@ function ActiveTabItem({
     const [s] = seg(index + 1);
     const [, e] = seg(index + 1);
 
-    // Show this tab only during its card's segment
     const opacity = useTransform(
         progress,
         [s - SEG * 0.05, s + SEG * 0.1, e - SEG * 0.1, e + SEG * 0.05],
@@ -501,13 +380,8 @@ function ActiveTabItem({
             style={{
                 position: "absolute",
                 left: 0,
-                /*
-                 * Tab height is ~40px (10px padding-top + content + 10px padding-bottom + 2px border-top).
-                 * We position it so its bottom edge overlaps the folder body's 2px top border,
-                 * creating the seamless Windows Explorer folder look.
-                 */
                 bottom: "100%",
-                marginBottom: -2,
+                marginBottom: -1,
                 opacity,
                 y: tabY,
                 pointerEvents: "auto",
@@ -558,7 +432,6 @@ export default function Projects() {
         [zoomStart, zoomStart + SEG * 0.7],
         [1, 0]
     );
-    // Slight diagonal movement during zoom-out
     const folderX = useTransform(
         scrollYProgress,
         [zoomStart, 1],
@@ -570,7 +443,7 @@ export default function Projects() {
         [0, -60]
     );
 
-    /* ── Folder bottom visibility: appears in seg 0, stays until zoom-out ── */
+    /* ── Folder bottom visibility ── */
     const [folderAppearStart] = seg(0);
     const folderBottomOpacity = useTransform(
         scrollYProgress,
@@ -593,11 +466,7 @@ export default function Projects() {
             id="projects"
             style={{ position: "relative" }}
         >
-            {/*
-              Scroll-tracked area.
-              Height = (TOTAL_SEGS + 1) * 100vh to give enough scroll runway.
-              The +1 ensures the last segment fully completes before leaving.
-            */}
+            {/* Scroll-tracked area */}
             <div
                 ref={scrollRef}
                 style={{
@@ -605,7 +474,7 @@ export default function Projects() {
                     position: "relative",
                 }}
             >
-                {/* Sticky viewport — stays in view while scrolling */}
+                {/* Sticky viewport */}
                 <div
                     style={{
                         position: "sticky",
@@ -617,12 +486,7 @@ export default function Projects() {
                         overflow: "hidden",
                     }}
                 >
-                    {/* Starry background (dark mode) */}
-                    <StarryBackground />
-                    {/* Light mode soft gradient overlay */}
-                    <div className="projects-light-gradient" />
-
-                    {/* Zoom/fade wrapper for the entire folder + content */}
+                    {/* Zoom/fade wrapper */}
                     <motion.div
                         style={{
                             maxWidth: 1280,
@@ -637,7 +501,7 @@ export default function Projects() {
                             zIndex: 1,
                         }}
                     >
-                        {/* Section header — always visible inside sticky */}
+                        {/* Section header */}
                         <div style={{ textAlign: "center", marginBottom: 40 }}>
                             <p
                                 style={{
@@ -666,7 +530,7 @@ export default function Projects() {
 
                         {/* Split layout: 40% text | 60% folder */}
                         <div className="projects-grid">
-                            {/* ── Left: crossfading project text ── */}
+                            {/* Left: crossfading project text */}
                             <div style={{ position: "relative", minHeight: 380 }}>
                                 {projects.map((p, i) => (
                                     <ProjectText
@@ -678,7 +542,7 @@ export default function Projects() {
                                 ))}
                             </div>
 
-                            {/* ── Right: 3D folder with cards ── */}
+                            {/* Right: 3D folder with cards */}
                             <motion.div
                                 style={{
                                     opacity: folderBottomOpacity,
@@ -688,29 +552,17 @@ export default function Projects() {
                                     perspective: 1200,
                                 }}
                             >
-                                {/*
-                                  FolderWrapper (position: relative)
-                                  ├── ActiveFolderTab (absolute, elevated above via negative top)
-                                  └── FolderBody (3D perspective container)
-
-                                  The tab is inside the same wrapper as the body,
-                                  eliminating the visual gap from the previous sibling layout.
-                                  paddingTop reserves space for the elevated tab.
-                                */}
                                 <div
                                     style={{
                                         position: "relative",
                                     }}
                                 >
-                                    {/* Active project tabs — absolutely positioned above folder body */}
                                     <ActiveFolderTab progress={scrollYProgress} />
 
-                                    {/* Folder body — contains cards + cover */}
                                     <div
                                         className="folder-body"
                                         style={{ perspective: 1200 }}
                                     >
-                                        {/* Project cards — stack inside */}
                                         {projects.map((p, i) => (
                                             <ProjectCard
                                                 key={i}
@@ -720,7 +572,6 @@ export default function Projects() {
                                             />
                                         ))}
 
-                                        {/* Folder cover — closes last */}
                                         <FolderCoverCard
                                             progress={scrollYProgress}
                                         />

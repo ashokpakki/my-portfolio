@@ -131,10 +131,7 @@ export default function Skills() {
                                 >
                                     {group.skills.map((s, si) => (
                                         <StaggerItem key={si}>
-                                            <div
-                                                className="skill-pill"
-                                                style={s.invert ? {} : {}}
-                                            >
+                                            <div className="skill-pill">
                                                 <img
                                                     src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${s.icon}.svg`}
                                                     alt={s.label}

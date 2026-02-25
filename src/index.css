@@ -1,94 +1,91 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════
-   DESIGN TOKENS — DARK THEME (default)
+   DESIGN TOKENS — DARK THEME (Grok-inspired starry night)
    ═══════════════════════════════════════════════════════════════ */
 :root {
-    --bg-primary: #000000;
-    --bg-secondary: #0a0a0a;
-    --bg-tertiary: #111111;
-    --bg-card: rgba(255, 255, 255, 0.03);
-    --bg-card-hover: rgba(255, 255, 255, 0.06);
+    --bg-primary: #05060f;
+    --bg-secondary: #0a0c1a;
+    --bg-tertiary: #0f1225;
+    --bg-card: rgba(15, 18, 35, 0.55);
+    --bg-card-hover: rgba(20, 25, 50, 0.7);
 
-    --text-primary: #ffffff;
-    --text-secondary: rgba(255, 255, 255, 0.5);
-    --text-tertiary: rgba(255, 255, 255, 0.3);
+    --text-primary: #f0f0f5;
+    --text-secondary: rgba(220, 225, 240, 0.55);
+    --text-tertiary: rgba(180, 190, 220, 0.35);
 
-    --accent: #ffffff;
-    --accent-light: #e5e5e5;
-    --accent-dark: #cccccc;
-    --accent-glow: rgba(255, 255, 255, 0.08);
-    --accent-glow-strong: rgba(255, 255, 255, 0.15);
+    --accent: #4ecdc4;
+    --accent-light: #7eddd6;
+    --accent-dark: #38b2ac;
+    --accent-glow: rgba(78, 205, 196, 0.1);
+    --accent-glow-strong: rgba(78, 205, 196, 0.25);
 
-    --border: rgba(255, 255, 255, 0.08);
-    --border-hover: rgba(255, 255, 255, 0.16);
+    --border: rgba(100, 120, 200, 0.1);
+    --border-hover: rgba(100, 140, 220, 0.2);
 
-    --gradient-text: linear-gradient(135deg, #ffffff 0%, #d4d4d4 40%, #a3a3a3 70%, #e5e5e5 100%);
-    --gradient-accent: linear-gradient(135deg, #ffffff, #e5e5e5, #d4d4d4);
-    --gradient-card-border: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.15));
+    --gradient-text: linear-gradient(135deg, #f0f0f5 0%, #4ecdc4 50%, #7eddd6 100%);
+    --gradient-accent: linear-gradient(135deg, #4ecdc4, #38b2ac);
+    --gradient-card-border: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(78, 205, 196, 0.02), rgba(78, 205, 196, 0.15));
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.6);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
-    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
-    --shadow-glow: 0 0 40px var(--accent-glow);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.7);
+    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.6);
+    --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.7);
+    --shadow-glow: 0 0 40px rgba(78, 205, 196, 0.12);
 
-    --nav-bg: rgba(0, 0, 0, 0.75);
-    --particle-color: 255, 255, 255;
-    --accent-particle: 255, 255, 255;
-    --mesh-one: rgba(255, 255, 255, 0.08);
-    --mesh-two: rgba(255, 255, 255, 0.05);
-    --mesh-three: rgba(255, 255, 255, 0.04);
+    --nav-bg: rgba(5, 6, 15, 0.85);
+    --mesh-one: rgba(78, 205, 196, 0.06);
+    --mesh-two: rgba(78, 205, 196, 0.03);
+    --mesh-three: rgba(78, 205, 196, 0.02);
 
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 20px;
     --radius-xl: 28px;
     --radius-full: 9999px;
+
+    /* Theme transition */
+    --transition-speed: 0.5s;
+    --icon-invert: invert(1);
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   DESIGN TOKENS — LIGHT THEME
+   DESIGN TOKENS — LIGHT THEME (Morning dawn)
    ═══════════════════════════════════════════════════════════════ */
 [data-theme="light"] {
-    --bg-primary: #ffffff;
-    --bg-secondary: #ffffff;
-    --bg-tertiary: #f4f4f5;
+    --bg-primary: #faf9f7;
+    --bg-secondary: #faf9f7;
+    --bg-tertiary: #f0ede8;
     --bg-card: #ffffff;
-    --bg-card-hover: #f4f4f5;
+    --bg-card-hover: #f5f2ed;
 
-    --text-primary: #09090b;
-    --text-secondary: #52525b;
-    --text-tertiary: #a1a1aa;
+    --text-primary: #1a1a2e;
+    --text-secondary: #555566;
+    --text-tertiary: #999aaa;
 
-    --accent: #000000;
-    /* Minimalist black accent for high contrast or keep colored? User said "clean minimalist". Black is safest for minimalism, but let's keep the brand color but maybe darker/sharper? Or just go monochrome? User said "make the background to pure white... remove blue gradient". They didn't say remove accent color. I'll keep accent but make sure background is white. */
-    --accent: #635BFF;
-    --accent-light: #818cf8;
-    --accent-dark: #4f46e5;
-    --accent-glow: rgba(99, 91, 255, 0.05);
-    /* Very subtle */
-    --accent-glow-strong: rgba(99, 91, 255, 0.15);
+    --accent: #2d2d2d;
+    --accent-light: #555555;
+    --accent-dark: #111111;
+    --accent-glow: rgba(45, 45, 45, 0.06);
+    --accent-glow-strong: rgba(45, 45, 45, 0.14);
 
-    --border: #e4e4e7;
-    --border-hover: #d4d4d8;
+    --border: #e8e4df;
+    --border-hover: #d5d0ca;
 
-    --gradient-text: linear-gradient(135deg, #000000 0%, #444444 100%);
-    /* Simpler gradient or just black? Let's go with a strong dark gradient */
-    --gradient-accent: linear-gradient(135deg, #635BFF, #4F46E5);
-    --gradient-card-border: linear-gradient(135deg, #e4e4e7, #ffffff, #e4e4e7);
+    --gradient-text: linear-gradient(135deg, #1a1a2e 0%, #2d2d2d 50%, #444444 100%);
+    --gradient-accent: linear-gradient(135deg, #2d2d2d, #1a1a1a);
+    --gradient-card-border: linear-gradient(135deg, #e8e4df, #ffffff, #e8e4df);
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-    --shadow-glow: 0 0 20px rgba(99, 91, 255, 0.1);
+    --shadow-sm: 0 1px 3px rgba(30, 20, 10, 0.05);
+    --shadow-md: 0 4px 12px rgba(30, 20, 10, 0.06);
+    --shadow-lg: 0 12px 30px rgba(30, 20, 10, 0.08);
+    --shadow-glow: 0 0 24px rgba(45, 45, 45, 0.08);
 
-    --nav-bg: rgba(255, 255, 255, 0.85);
-    --particle-color: 0, 0, 0;
-    /* Unused now but kept for safety */
-    --accent-particle: 0, 0, 0;
+    --nav-bg: rgba(250, 249, 247, 0.9);
     --mesh-one: transparent;
     --mesh-two: transparent;
     --mesh-three: transparent;
+
+    --icon-invert: none;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -112,20 +109,56 @@ body {
     font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background: var(--bg-primary);
     color: var(--text-primary);
-    transition: background 0.4s ease, color 0.4s ease;
     overflow-x: hidden;
     line-height: 1.7;
+    transition: background var(--transition-speed) ease,
+                color var(--transition-speed) ease;
 }
 
 #root {
     min-height: 100vh;
+    position: relative;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   THEME TRANSITION OVERLAY
+   Circle-expansion from toggle button (night → morning sweep)
+   ═══════════════════════════════════════════════════════════════ */
+.theme-transition-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.theme-transition-overlay.active {
+    opacity: 1;
+    animation: theme-sweep 800ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.theme-transition-overlay.to-light {
+    background: linear-gradient(180deg, #0d1b3e 0%, #1a3a5c 30%, #e8a87c 65%, #faf9f7 100%);
+}
+
+.theme-transition-overlay.to-dark {
+    background: linear-gradient(180deg, #faf9f7 0%, #7c9bb5 30%, #1a2a44 65%, #05060f 100%);
+}
+
+@keyframes theme-sweep {
+    0% {
+        clip-path: circle(0% at var(--tx, 50%) var(--ty, 5%));
+    }
+    100% {
+        clip-path: circle(150% at var(--tx, 50%) var(--ty, 5%));
+    }
 }
 
 /* ═══════════════════════════════════════════════════════════════
    SCROLLBAR
    ═══════════════════════════════════════════════════════════════ */
 ::-webkit-scrollbar {
-    width: 6px;
+    width: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -133,7 +166,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--accent-glow);
+    background: var(--border-hover);
     border-radius: var(--radius-full);
 }
 
@@ -146,11 +179,11 @@ body {
    ═══════════════════════════════════════════════════════════════ */
 ::selection {
     background: var(--accent);
-    color: white;
+    color: #05060f;
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   ANIMATED GRADIENT TEXT
+   GRADIENT TEXT
    ═══════════════════════════════════════════════════════════════ */
 .gradient-text {
     background: var(--gradient-text);
@@ -188,99 +221,38 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   GRADIENT BORDER CARDS
+   CARD — subtle inset glow border
    ═══════════════════════════════════════════════════════════════ */
 .card-gradient-border {
     position: relative;
     background: var(--bg-card);
     border-radius: var(--radius-lg);
-    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.card-gradient-border::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: var(--gradient-card-border);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-    opacity: 0.6;
+.card-gradient-border:hover {
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-glow);
 }
 
-.card-gradient-border:hover::before {
-    opacity: 1;
+/* Dark mode: subtle inset top highlight */
+:root .card-gradient-border {
+    box-shadow: inset 0 1px 0 rgba(78, 205, 196, 0.06);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   ANIMATED MESH GRADIENT BACKGROUNDS
-   ═══════════════════════════════════════════════════════════════ */
-.mesh-gradient {
-    position: absolute;
-    width: 600px;
-    height: 600px;
-    border-radius: 50%;
-    filter: blur(120px);
-    opacity: 0.15;
-    pointer-events: none;
-    animation: float 20s ease-in-out infinite;
+:root .card-gradient-border:hover {
+    box-shadow: inset 0 1px 0 rgba(78, 205, 196, 0.1),
+                var(--shadow-glow);
 }
 
-.mesh-gradient.one {
-    background: var(--mesh-one);
-    top: -200px;
-    right: -100px;
-    animation-delay: 0s;
+/* Light mode: clean shadow */
+[data-theme="light"] .card-gradient-border {
+    box-shadow: 0 1px 4px rgba(30, 20, 10, 0.04);
 }
 
-.mesh-gradient.two {
-    background: var(--mesh-two);
-    bottom: -200px;
-    left: -100px;
-    animation-delay: -7s;
-}
-
-.mesh-gradient.three {
-    background: var(--mesh-three);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    animation-delay: -14s;
-    width: 400px;
-    height: 400px;
-}
-
-@keyframes float {
-
-    0%,
-    100% {
-        transform: translate(0, 0) scale(1);
-    }
-
-    25% {
-        transform: translate(30px, -30px) scale(1.05);
-    }
-
-    50% {
-        transform: translate(-20px, 20px) scale(0.95);
-    }
-
-    75% {
-        transform: translate(20px, 10px) scale(1.03);
-    }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   DOT GRID PATTERN
-   ═══════════════════════════════════════════════════════════════ */
-.dot-grid {
-    background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
-    background-size: 32px 32px;
+[data-theme="light"] .card-gradient-border:hover {
+    box-shadow: 0 4px 16px rgba(30, 20, 10, 0.08);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -288,6 +260,8 @@ body {
    ═══════════════════════════════════════════════════════════════ */
 .section-padding {
     padding: 120px 24px;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 800px;
 }
 
 @media (min-width: 768px) {
@@ -315,43 +289,7 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   NAV LINK UNDERLINE ANIMATION
-   ═══════════════════════════════════════════════════════════════ */
-.nav-link {
-    position: relative;
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 0.875rem;
-    letter-spacing: 0.01em;
-    transition: color 0.3s ease;
-    cursor: pointer;
-}
-
-.nav-link::after {
-    content: "";
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: var(--accent);
-    transition: width 0.3s ease;
-    border-radius: 1px;
-}
-
-.nav-link:hover,
-.nav-link.active {
-    color: var(--text-primary);
-}
-
-.nav-link:hover::after,
-.nav-link.active::after {
-    width: 100%;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   SKILL PILL
+   SKILL PILL — clean with left accent bar on hover
    ═══════════════════════════════════════════════════════════════ */
 .skill-pill {
     display: flex;
@@ -364,15 +302,38 @@ body {
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--text-primary);
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease,
+                background 0.3s ease;
     cursor: default;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Left accent bar appears on hover */
+.skill-pill::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--accent);
+    border-radius: 0 2px 2px 0;
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
 }
 
 .skill-pill:hover {
     background: var(--bg-card-hover);
-    border-color: var(--accent);
-    box-shadow: 0 0 20px var(--accent-glow);
+    border-color: var(--border-hover);
     transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.skill-pill:hover::before {
+    transform: scaleY(1);
 }
 
 .skill-pill img {
@@ -394,7 +355,9 @@ body {
     font-family: inherit;
     font-size: 0.95rem;
     outline: none;
-    transition: all 0.3s ease;
+    transition: border-color 0.3s ease,
+                box-shadow 0.3s ease,
+                background 0.3s ease;
 }
 
 .form-input::placeholder {
@@ -404,10 +367,11 @@ body {
 .form-input:focus {
     border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--accent-glow), 0 0 20px var(--accent-glow);
+    background: var(--bg-card-hover);
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   ACCENT BUTTON
+   ACCENT BUTTON — gradient with hover bloom
    ═══════════════════════════════════════════════════════════════ */
 .btn-accent {
     display: inline-flex;
@@ -415,20 +379,44 @@ body {
     gap: 8px;
     padding: 12px 28px;
     background: var(--gradient-accent);
-    color: white;
+    color: #05060f;
     border: none;
     border-radius: var(--radius-full);
     font-family: inherit;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     text-decoration: none;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Light mode: lighter button text */
+[data-theme="light"] .btn-accent {
+    color: #ffffff;
 }
 
 .btn-accent:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 30px var(--accent-glow-strong);
+}
+
+/* Hover bloom effect */
+.btn-accent::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: var(--gradient-accent);
+    opacity: 0;
+    filter: blur(12px);
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.btn-accent:hover::after {
+    opacity: 0.5;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -472,18 +460,6 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   TILT CARD (for vanilla-tilt)
-   ═══════════════════════════════════════════════════════════════ */
-.tilt-card {
-    transform-style: preserve-3d;
-    will-change: transform;
-}
-
-.tilt-card .tilt-inner {
-    transform: translateZ(30px);
-}
-
-/* ═══════════════════════════════════════════════════════════════
    RESPONSIVE UTILITIES
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
@@ -502,12 +478,10 @@ body {
         margin-bottom: 20px;
     }
 
-    /* Force folder to be full width on mobile */
     .folder-body {
         aspect-ratio: 4/3.5 !important;
     }
 
-    /* Adjust text center for mobile */
     .project-text-container {
         align-items: center !important;
         text-align: center !important;
@@ -525,46 +499,46 @@ body {
    PROJECTS SECTION — CINEMATIC FOLDER
    ═══════════════════════════════════════════════════════════════ */
 
-/* Starry background canvas — dark mode only */
-.projects-starry-canvas {
-    position: absolute;
+/* Global starry canvas — dark mode only, now in root */
+.global-starry-canvas {
+    position: fixed;
     inset: 0;
     z-index: 0;
     pointer-events: none;
 }
 
-[data-theme="light"] .projects-starry-canvas {
+[data-theme="light"] .global-starry-canvas {
     display: none;
 }
 
-/* Folder body — outlined folder shape */
+/* Folder body */
 .folder-body {
     position: relative;
     width: 100%;
     aspect-ratio: 4 / 3;
-    border: 2px solid var(--border-hover);
+    border: 1px solid var(--border-hover);
     border-radius: 0 var(--radius-lg) var(--radius-lg) var(--radius-lg);
     background: var(--bg-card);
     overflow: hidden;
 }
 
-/* Premium glow edge for dark mode */
+/* Dark mode folder glow */
 :root .folder-body {
     box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.04),
-        0 0 60px -10px rgba(255, 255, 255, 0.06),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        0 0 0 1px rgba(78, 205, 196, 0.04),
+        0 0 60px -10px rgba(78, 205, 196, 0.06),
+        inset 0 1px 0 rgba(78, 205, 196, 0.05);
 }
 
 [data-theme="light"] .folder-body {
     border-color: var(--border-hover);
     box-shadow:
-        0 8px 40px rgba(0, 0, 0, 0.04),
-        0 2px 12px rgba(0, 0, 0, 0.02);
+        0 8px 40px rgba(30, 20, 10, 0.05),
+        0 2px 12px rgba(30, 20, 10, 0.03);
     background: #ffffff;
 }
 
-/* Folder tab — trapezoid shape */
+/* Folder tab */
 .folder-tab {
     position: relative;
     display: inline-flex;
@@ -577,12 +551,12 @@ body {
     text-transform: uppercase;
     color: var(--text-secondary);
     background: var(--bg-card);
-    border: 2px solid var(--border-hover);
+    border: 1px solid var(--border-hover);
     border-bottom: none;
     border-radius: var(--radius-sm) var(--radius-md) 0 0;
     cursor: pointer;
     text-decoration: none;
-    transition: color 0.2s, background 0.2s, border-color 0.2s;
+    transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
     white-space: nowrap;
     z-index: 2;
 }
@@ -594,15 +568,15 @@ body {
 }
 
 :root .folder-tab {
-    box-shadow: 0 -2px 12px rgba(255, 255, 255, 0.03);
+    box-shadow: 0 -2px 16px rgba(78, 205, 196, 0.04);
 }
 
 [data-theme="light"] .folder-tab {
-    background: rgba(255, 255, 255, 0.7);
-    box-shadow: 0 -2px 12px rgba(99, 91, 255, 0.05);
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.03);
 }
 
-/* Card image wrapper */
+/* Card image */
 .project-card-image {
     width: 100%;
     height: 100%;
@@ -614,14 +588,15 @@ body {
 
 :root .project-card-image {
     box-shadow:
-        0 16px 48px rgba(0, 0, 0, 0.35),
-        0 4px 16px rgba(0, 0, 0, 0.2);
+        0 16px 48px rgba(0, 0, 0, 0.4),
+        0 4px 16px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(78, 205, 196, 0.05);
 }
 
 [data-theme="light"] .project-card-image {
     box-shadow:
-        0 16px 48px rgba(0, 0, 0, 0.08),
-        0 4px 16px rgba(0, 0, 0, 0.04);
+        0 16px 48px rgba(30, 20, 10, 0.08),
+        0 4px 16px rgba(30, 20, 10, 0.04);
     border-color: rgba(0, 0, 0, 0.05);
 }
 
@@ -632,12 +607,7 @@ body {
     display: block;
 }
 
-/* Light mode gradient overlay for projects section */
-[data-theme="light"] .projects-light-gradient {
-    display: none;
-}
-
-/* Project text dramatic transitions */
+/* Project text enter */
 .project-text-enter {
     animation: projectTextIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -659,7 +629,7 @@ body {
     width: 100%;
     height: 100%;
     border-radius: var(--radius-lg);
-    border: 2px solid var(--border-hover);
+    border: 1px solid var(--border-hover);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -668,17 +638,17 @@ body {
 
 :root .folder-cover {
     background:
-        linear-gradient(135deg, rgba(20, 20, 20, 0.95), rgba(10, 10, 10, 0.98));
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        linear-gradient(135deg, rgba(10, 12, 30, 0.95), rgba(5, 6, 15, 0.98));
+    box-shadow: inset 0 1px 0 rgba(78, 205, 196, 0.04);
 }
 
 [data-theme="light"] .folder-cover {
     background: #ffffff;
     border-color: var(--border);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 8px 32px rgba(30, 20, 10, 0.05);
 }
 
-/* CTA link styling */
+/* CTA link */
 .project-cta {
     display: inline-flex;
     align-items: center;
@@ -700,4 +670,47 @@ body {
 
 .project-cta:hover svg {
     transform: translateX(2px);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER — animated gradient top border
+   ═══════════════════════════════════════════════════════════════ */
+.footer-border {
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent,
+        var(--border-hover),
+        var(--accent-glow-strong),
+        var(--border-hover),
+        transparent);
+    background-size: 200% 100%;
+    animation: footer-border-shift 8s linear infinite;
+}
+
+@keyframes footer-border-shift {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PREFERS REDUCED MOTION
+   ═══════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .theme-transition-overlay.active {
+        animation: none;
+        clip-path: none;
+        opacity: 0;
+    }
+
+    html {
+        scroll-behavior: auto;
+    }
 }

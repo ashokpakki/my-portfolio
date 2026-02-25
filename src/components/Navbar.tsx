@@ -37,7 +37,6 @@ function DockItem({
 
         if (dist < maxDist) {
             const proximity = 1 - dist / maxDist;
-            // Ease out — smooth falloff, max 1.25× scale
             const eased = proximity * proximity;
             setScale(1 + eased * 0.25);
         } else {
@@ -58,10 +57,10 @@ function DockItem({
                 fontFamily: "Inter, sans-serif",
                 fontSize: "0.9rem",
                 fontWeight: isActive ? 600 : 400,
-                color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
+                color: isActive ? "var(--accent)" : "var(--text-secondary)",
                 padding: "8px 16px",
                 borderRadius: "var(--radius-md)",
-                transition: "color 0.2s, background 0.2s",
+                transition: "color 0.25s ease, background 0.25s ease",
                 transformOrigin: "center bottom",
                 position: "relative",
                 letterSpacing: "-0.01em",
@@ -72,28 +71,27 @@ function DockItem({
             }}
             onMouseLeave={(e) => {
                 e.currentTarget.style.color = isActive
-                    ? "var(--text-primary)"
+                    ? "var(--accent)"
                     : "var(--text-secondary)";
                 e.currentTarget.style.background = "none";
             }}
         >
             {label}
-            {/* Active indicator dot */}
+            {/* Active indicator — sliding pill */}
             <AnimatePresence>
                 {isActive && (
                     <motion.span
-                        layoutId="nav-active-dot"
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0 }}
+                        layoutId="nav-active-pill"
+                        initial={{ opacity: 0, scaleX: 0 }}
+                        animate={{ opacity: 1, scaleX: 1 }}
+                        exit={{ opacity: 0, scaleX: 0 }}
                         style={{
                             position: "absolute",
-                            bottom: 1,
-                            left: "50%",
-                            transform: "translateX(-50%)",
-                            width: 4,
-                            height: 4,
-                            borderRadius: "50%",
+                            bottom: 2,
+                            left: "20%",
+                            right: "20%",
+                            height: 2,
+                            borderRadius: "var(--radius-full)",
                             background: "var(--accent)",
                         }}
                         transition={{ type: "spring", stiffness: 500, damping: 30 }}
@@ -110,20 +108,18 @@ export default function Navbar() {
     const navAreaRef = useRef<HTMLDivElement>(null);
     const { scrollY } = useScroll();
     const bgOpacity = useTransform(scrollY, [0, 100], [0, 1]);
-    const borderOpacity = useTransform(scrollY, [0, 100], [0, 0.08]);
 
-    // Throttled mouse tracking to prevent jitter
+    // Throttled mouse tracking (~60fps)
     const lastMouseUpdate = useRef(0);
     const handleNavMouseMove = useCallback((e: React.MouseEvent) => {
         const now = Date.now();
         if (now - lastMouseUpdate.current > 16) {
-            // ~60fps cap
             setMouseX(e.clientX);
             lastMouseUpdate.current = now;
         }
     }, []);
 
-    // Track active section based on scroll position
+    // Track active section
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
@@ -152,26 +148,23 @@ export default function Navbar() {
     };
 
     return (
-        <motion.nav
+        <nav
             style={{
                 position: "fixed",
                 top: 0,
                 left: 0,
                 right: 0,
                 zIndex: 100,
-                backdropFilter: "blur(20px)",
-                WebkitBackdropFilter: "blur(20px)",
             }}
         >
-            {/* Dynamic background */}
+            {/* Dynamic background — solid semi-transparent (no backdrop-filter) */}
             <motion.div
                 style={{
                     position: "absolute",
                     inset: 0,
                     background: "var(--nav-bg)",
                     opacity: bgOpacity,
-                    borderBottom: "1px solid",
-                    borderColor: useTransform(borderOpacity, (v) => `rgba(255,255,255,${v})`),
+                    borderBottom: "1px solid var(--border)",
                 }}
             />
 
@@ -186,7 +179,7 @@ export default function Navbar() {
                     justifyContent: "space-between",
                 }}
             >
-                {/* Logo / Name */}
+                {/* Logo */}
                 <motion.button
                     onClick={() => scrollTo("hero")}
                     whileHover={{ scale: 1.02 }}
@@ -206,7 +199,7 @@ export default function Navbar() {
                     <span style={{ color: "var(--accent)" }}>.</span>
                 </motion.button>
 
-                {/* Nav Links with dock magnification — hide on small screens */}
+                {/* Nav Links with dock magnification */}
                 <div
                     ref={navAreaRef}
                     onMouseMove={handleNavMouseMove}
@@ -218,8 +211,8 @@ export default function Navbar() {
                         padding: "6px 8px",
                         borderRadius: "var(--radius-lg)",
                         background: "var(--bg-card)",
-                        border: "1px solid var(--border-hover)",
-                        boxShadow: "0 1px 8px rgba(0,0,0,0.15)",
+                        border: "1px solid var(--border)",
+                        boxShadow: "var(--shadow-sm)",
                     }}
                     className="hidden md:flex"
                 >
@@ -251,6 +244,6 @@ export default function Navbar() {
                     </a>
                 </div>
             </div>
-        </motion.nav>
+        </nav>
     );
 }

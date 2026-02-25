@@ -1,6 +1,12 @@
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
 
+/** Check once at module level — stable across renders */
+const prefersReducedMotion =
+    typeof window !== "undefined"
+        ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        : false;
+
 interface SectionRevealProps {
     children: ReactNode;
     className?: string;
@@ -14,21 +20,26 @@ export default function SectionReveal({
     delay = 0,
     direction = "up",
 }: SectionRevealProps) {
+    // If reduced motion, render immediately without animation
+    if (prefersReducedMotion) {
+        return <div className={className}>{children}</div>;
+    }
+
     const dirMap = {
-        up: { y: 60, x: 0 },
-        left: { y: 0, x: -60 },
-        right: { y: 0, x: 60 },
+        up: { y: 50, x: 0 },
+        left: { y: 0, x: -50 },
+        right: { y: 0, x: 50 },
     };
 
     const { x, y } = dirMap[direction];
 
     return (
         <motion.div
-            initial={{ opacity: 0, y, x, scale: 0.97 }}
-            whileInView={{ opacity: 1, y: 0, x: 0, scale: 1 }}
+            initial={{ opacity: 0, y, x }}
+            whileInView={{ opacity: 1, y: 0, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{
-                duration: 0.7,
+                duration: 0.6,
                 delay,
                 ease: [0.22, 1, 0.36, 1] as const,
             }}
@@ -49,6 +60,10 @@ export function StaggerContainer({
     className?: string;
     staggerDelay?: number;
 }) {
+    if (prefersReducedMotion) {
+        return <div className={className}>{children}</div>;
+    }
+
     return (
         <motion.div
             initial="hidden"
@@ -76,16 +91,19 @@ export function StaggerItem({
     children: ReactNode;
     className?: string;
 }) {
+    if (prefersReducedMotion) {
+        return <div className={className}>{children}</div>;
+    }
+
     return (
         <motion.div
             variants={{
-                hidden: { opacity: 0, y: 30, scale: 0.95 },
+                hidden: { opacity: 0, y: 25 },
                 visible: {
                     opacity: 1,
                     y: 0,
-                    scale: 1,
                     transition: {
-                        duration: 0.5,
+                        duration: 0.45,
                         ease: [0.22, 1, 0.36, 1] as const,
                     },
                 },

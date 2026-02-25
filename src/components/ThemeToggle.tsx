@@ -2,33 +2,35 @@ import { motion } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
 
 export default function ThemeToggle() {
-    const { theme, toggleTheme } = useTheme();
+    const { theme, toggleTheme, isTransitioning } = useTheme();
     const isDark = theme === "dark";
 
     return (
         <motion.button
-            onClick={toggleTheme}
+            onClick={(e) => toggleTheme(e)}
             aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
-            whileTap={{ scale: 0.9 }}
+            whileTap={{ scale: 0.85 }}
+            disabled={isTransitioning}
             style={{
                 position: "relative",
-                width: 40,
-                height: 40,
+                width: 42,
+                height: 42,
                 borderRadius: "50%",
                 background: "var(--bg-card)",
                 border: "1px solid var(--border)",
-                cursor: "pointer",
+                cursor: isTransitioning ? "wait" : "pointer",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 color: "var(--text-primary)",
                 overflow: "hidden",
+                transition: "border-color 0.3s ease, background 0.3s ease",
             }}
         >
-            {/* Sun */}
+            {/* Sun — warm golden glow */}
             <motion.svg
-                width="18"
-                height="18"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -41,8 +43,8 @@ export default function ThemeToggle() {
                     rotate: isDark ? -90 : 0,
                     opacity: isDark ? 0 : 1,
                 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-                style={{ position: "absolute" }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                style={{ position: "absolute", color: isDark ? "currentColor" : "#e8a040" }}
             >
                 <circle cx="12" cy="12" r="5" />
                 <line x1="12" y1="1" x2="12" y2="3" />
@@ -55,10 +57,10 @@ export default function ThemeToggle() {
                 <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
             </motion.svg>
 
-            {/* Moon */}
+            {/* Moon — cool cyan glow */}
             <motion.svg
-                width="18"
-                height="18"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -71,8 +73,8 @@ export default function ThemeToggle() {
                     rotate: isDark ? 0 : 90,
                     opacity: isDark ? 1 : 0,
                 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-                style={{ position: "absolute" }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                style={{ position: "absolute", color: isDark ? "#4ecdc4" : "currentColor" }}
             >
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
             </motion.svg>

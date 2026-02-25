@@ -9,20 +9,24 @@ function Counter({ target, suffix = "" }: { target: number; suffix?: string }) {
 
     useEffect(() => {
         if (!inView || !ref.current) return;
-        let start = 0;
         const duration = 1500;
         const startTime = performance.now();
+        let rafId: number;
 
         const tick = (now: number) => {
             const elapsed = now - startTime;
             const progress = Math.min(elapsed / duration, 1);
             // Ease out cubic
             const eased = 1 - Math.pow(1 - progress, 3);
-            start = Math.round(eased * target);
-            if (ref.current) ref.current.textContent = start + suffix;
-            if (progress < 1) requestAnimationFrame(tick);
+            const value = Math.round(eased * target);
+            if (ref.current) ref.current.textContent = value + suffix;
+            if (progress < 1) {
+                rafId = requestAnimationFrame(tick);
+            }
         };
-        requestAnimationFrame(tick);
+        rafId = requestAnimationFrame(tick);
+
+        return () => cancelAnimationFrame(rafId);
     }, [inView, target, suffix]);
 
     return <span ref={ref}>0{suffix}</span>;
@@ -76,8 +80,6 @@ const stats = [
 export default function About() {
     return (
         <section id="about" className="section-padding" style={{ position: "relative" }}>
-            <div className="mesh-gradient three" />
-
             <div className="section-container">
                 {/* Section Header */}
                 <SectionReveal>
@@ -124,7 +126,7 @@ export default function About() {
                     </div>
                 </SectionReveal>
 
-                {/* Stats */}
+                {/* Stats — clean with left accent bar */}
                 <SectionReveal delay={0.1}>
                     <div
                         style={{
@@ -137,13 +139,38 @@ export default function About() {
                         {stats.map((s, i) => (
                             <motion.div
                                 key={i}
-                                whileHover={{ y: -4, boxShadow: "var(--shadow-glow)" }}
-                                className="card-gradient-border"
+                                whileHover={{ y: -4 }}
                                 style={{
                                     padding: "28px 20px",
                                     textAlign: "center",
+                                    background: "var(--bg-card)",
+                                    border: "1px solid var(--border)",
+                                    borderRadius: "var(--radius-lg)",
+                                    position: "relative",
+                                    overflow: "hidden",
+                                    transition: "border-color 0.3s ease, box-shadow 0.3s ease",
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.borderColor = "var(--border-hover)";
+                                    e.currentTarget.style.boxShadow = "var(--shadow-glow)";
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.borderColor = "var(--border)";
+                                    e.currentTarget.style.boxShadow = "none";
                                 }}
                             >
+                                {/* Left accent bar */}
+                                <div
+                                    style={{
+                                        position: "absolute",
+                                        left: 0,
+                                        top: "20%",
+                                        bottom: "20%",
+                                        width: 3,
+                                        background: "var(--accent)",
+                                        borderRadius: "0 2px 2px 0",
+                                    }}
+                                />
                                 <div
                                     style={{
                                         fontSize: "2.5rem",
@@ -171,7 +198,7 @@ export default function About() {
                     </div>
                 </SectionReveal>
 
-                {/* Experience & Education in two-column */}
+                {/* Experience & Education */}
                 <div
                     style={{
                         display: "grid",
@@ -275,8 +302,21 @@ function TimelineCard({
     return (
         <motion.div
             whileHover={{ y: -2 }}
-            className="card-gradient-border"
-            style={{ padding: 24 }}
+            style={{
+                padding: 24,
+                background: "var(--bg-card)",
+                border: "1px solid var(--border)",
+                borderRadius: "var(--radius-lg)",
+                transition: "border-color 0.3s ease, box-shadow 0.3s ease",
+            }}
+            onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "var(--border-hover)";
+                e.currentTarget.style.boxShadow = "var(--shadow-md)";
+            }}
+            onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "var(--border)";
+                e.currentTarget.style.boxShadow = "none";
+            }}
         >
             <div
                 style={{

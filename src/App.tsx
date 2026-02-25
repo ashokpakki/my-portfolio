@@ -1,5 +1,6 @@
 import { ThemeProvider } from "./context/ThemeContext";
 
+import StarryCanvas from "./components/StarryCanvas";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import About from "./components/About";
@@ -11,8 +12,8 @@ import Footer from "./components/Footer";
 export default function App() {
     return (
         <ThemeProvider>
-            {/* Global cursor spotlight */}
-
+            {/* Global starry background — dark mode only */}
+            <StarryCanvas />
 
             {/* Fixed navigation */}
             <Navbar />

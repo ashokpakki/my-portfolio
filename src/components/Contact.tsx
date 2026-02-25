@@ -38,8 +38,6 @@ export default function Contact() {
 
     return (
         <section id="contact" className="section-padding" style={{ position: "relative" }}>
-            <div className="mesh-gradient two" style={{ opacity: 0.08 }} />
-
             <div className="section-container">
                 {/* Header */}
                 <SectionReveal>
@@ -124,10 +122,7 @@ export default function Contact() {
                                         href={link.href}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        whileHover={{
-                                            x: 4,
-                                            boxShadow: "0 0 20px var(--accent-glow)",
-                                        }}
+                                        whileHover={{ x: 4 }}
                                         style={{
                                             display: "flex",
                                             alignItems: "center",
@@ -140,15 +135,17 @@ export default function Contact() {
                                             textDecoration: "none",
                                             fontSize: "0.9rem",
                                             fontWeight: 500,
-                                            transition: "color 0.3s, border-color 0.3s",
+                                            transition: "color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease",
                                         }}
                                         onMouseEnter={(e) => {
-                                            e.currentTarget.style.color = "var(--text-primary)";
+                                            e.currentTarget.style.color = "var(--accent)";
                                             e.currentTarget.style.borderColor = "var(--accent)";
+                                            e.currentTarget.style.boxShadow = "var(--shadow-glow)";
                                         }}
                                         onMouseLeave={(e) => {
                                             e.currentTarget.style.color = "var(--text-secondary)";
                                             e.currentTarget.style.borderColor = "var(--border)";
+                                            e.currentTarget.style.boxShadow = "none";
                                         }}
                                     >
                                         <span style={{ color: "var(--accent)" }}>{link.icon}</span>
@@ -161,9 +158,13 @@ export default function Contact() {
 
                     {/* Right — Form */}
                     <SectionReveal direction="right" delay={0.2}>
-                        <motion.div
-                            className="card-gradient-border"
-                            style={{ padding: 32 }}
+                        <div
+                            style={{
+                                padding: 32,
+                                background: "var(--bg-card)",
+                                border: "1px solid var(--border)",
+                                borderRadius: "var(--radius-lg)",
+                            }}
                         >
                             {submitted ? (
                                 <motion.div
@@ -309,7 +310,7 @@ export default function Contact() {
                                     </motion.button>
                                 </form>
                             )}
-                        </motion.div>
+                        </div>
                     </SectionReveal>
                 </div>
             </div>
