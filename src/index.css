@@ -52,11 +52,11 @@
    DESIGN TOKENS — LIGHT THEME (Morning dawn)
    ═══════════════════════════════════════════════════════════════ */
 [data-theme="light"] {
-    --bg-primary: #faf9f7;
-    --bg-secondary: #faf9f7;
-    --bg-tertiary: #f0ede8;
+    --bg-primary: #ffffff;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f5f5f5;
     --bg-card: #ffffff;
-    --bg-card-hover: #f5f2ed;
+    --bg-card-hover: #f9f9f9;
 
     --text-primary: #1a1a2e;
     --text-secondary: #555566;
@@ -120,39 +120,7 @@ body {
     position: relative;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   THEME TRANSITION OVERLAY
-   Circle-expansion from toggle button (night → morning sweep)
-   ═══════════════════════════════════════════════════════════════ */
-.theme-transition-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    pointer-events: none;
-    opacity: 0;
-}
 
-.theme-transition-overlay.active {
-    opacity: 1;
-    animation: theme-sweep 800ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.theme-transition-overlay.to-light {
-    background: linear-gradient(180deg, #0d1b3e 0%, #1a3a5c 30%, #e8a87c 65%, #faf9f7 100%);
-}
-
-.theme-transition-overlay.to-dark {
-    background: linear-gradient(180deg, #faf9f7 0%, #7c9bb5 30%, #1a2a44 65%, #05060f 100%);
-}
-
-@keyframes theme-sweep {
-    0% {
-        clip-path: circle(0% at var(--tx, 50%) var(--ty, 5%));
-    }
-    100% {
-        clip-path: circle(150% at var(--tx, 50%) var(--ty, 5%));
-    }
-}
 
 /* ═══════════════════════════════════════════════════════════════
    SCROLLBAR

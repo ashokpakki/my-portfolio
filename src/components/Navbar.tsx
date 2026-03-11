@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
@@ -10,7 +10,6 @@ const navLinks = [
     { label: "Contact", href: "contact" },
 ];
 
-/* ─── Dock magnification item ──────────────────────────────── */
 function DockItem({
     label,
     isActive,
@@ -19,82 +18,95 @@ function DockItem({
 }: {
     label: string;
     isActive: boolean;
-    mouseX: number | null;
+    mouseX: any;
     onClick: () => void;
 }) {
     const ref = useRef<HTMLButtonElement>(null);
-    const [scale, setScale] = useState(1);
+    const [isHovered, setIsHovered] = useState(false);
 
-    useEffect(() => {
-        if (mouseX === null || !ref.current) {
-            setScale(1);
-            return;
-        }
-        const rect = ref.current.getBoundingClientRect();
-        const center = rect.left + rect.width / 2;
-        const dist = Math.abs(mouseX - center);
-        const maxDist = 120;
+    // Optimized distance calculation via Framer Motion's motion values instead of React state.
+    // This gives butter-smooth 120fps animations without causing parent renders on every pixel moved.
+    const distance = useTransform(mouseX, (val: number) => {
+        const bounds = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };
+        return val - bounds.x - bounds.width / 2;
+    });
 
-        if (dist < maxDist) {
-            const proximity = 1 - dist / maxDist;
-            const eased = proximity * proximity;
-            setScale(1 + eased * 0.25);
-        } else {
-            setScale(1);
-        }
-    }, [mouseX]);
+    // Create the signature dock bulge and lift effect
+    const scaleSync = useTransform(distance, [-120, 0, 120], [1, 1.35, 1]);
+    const ySync = useTransform(distance, [-120, 0, 120], [0, -8, 0]);
+    
+    const scale = useSpring(scaleSync, { mass: 0.1, stiffness: 350, damping: 20 });
+    const y = useSpring(ySync, { mass: 0.1, stiffness: 350, damping: 20 });
 
     return (
         <motion.button
             ref={ref}
             onClick={onClick}
-            animate={{ scale }}
-            transition={{ type: "tween", duration: 0.15, ease: "easeOut" }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
             style={{
+                scale,
+                y,
                 background: "none",
                 border: "none",
                 cursor: "pointer",
                 fontFamily: "Inter, sans-serif",
-                fontSize: "0.9rem",
-                fontWeight: isActive ? 600 : 400,
-                color: isActive ? "var(--accent)" : "var(--text-secondary)",
-                padding: "8px 16px",
-                borderRadius: "var(--radius-md)",
-                transition: "color 0.25s ease, background 0.25s ease",
-                transformOrigin: "center bottom",
+                fontSize: "0.95rem",
+                fontWeight: isActive ? 600 : 500,
+                color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
+                padding: "10px 18px",
                 position: "relative",
-                letterSpacing: "-0.01em",
-            }}
-            onMouseEnter={(e) => {
-                e.currentTarget.style.color = "var(--text-primary)";
-                e.currentTarget.style.background = "var(--bg-card-hover)";
-            }}
-            onMouseLeave={(e) => {
-                e.currentTarget.style.color = isActive
-                    ? "var(--accent)"
-                    : "var(--text-secondary)";
-                e.currentTarget.style.background = "none";
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                transformOrigin: "center bottom",
+                outline: "none",
+                transition: "color 0.2s ease",
             }}
         >
-            {label}
-            {/* Active indicator — sliding pill */}
+            <span style={{ position: "relative", zIndex: 2, textShadow: isHovered || isActive ? "0 2px 10px rgba(0,0,0,0.3)" : "none" }}>{label}</span>
+
+            {/* Creative Hover Highlight pill */}
             <AnimatePresence>
-                {isActive && (
-                    <motion.span
-                        layoutId="nav-active-pill"
-                        initial={{ opacity: 0, scaleX: 0 }}
-                        animate={{ opacity: 1, scaleX: 1 }}
-                        exit={{ opacity: 0, scaleX: 0 }}
+                {isHovered && !isActive && (
+                    <motion.div
+                        layoutId="nav-hover-pill"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{ duration: 0.2 }}
                         style={{
                             position: "absolute",
-                            bottom: 2,
-                            left: "20%",
-                            right: "20%",
-                            height: 2,
+                            inset: 0,
+                            background: "var(--bg-card-hover)",
+                            borderRadius: "var(--radius-lg)",
+                            zIndex: 0,
+                            border: "1px solid var(--border)",
+                            boxShadow: "var(--shadow-sm)",
+                        }}
+                    />
+                )}
+            </AnimatePresence>
+
+            {/* Active Line indicator attached cleanly to the bottom */}
+            <AnimatePresence>
+                {isActive && (
+                    <motion.div
+                        layoutId="nav-active-indicator"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        style={{
+                            position: "absolute",
+                            bottom: "-2px",
+                            width: "50%",
+                            height: "3px",
                             borderRadius: "var(--radius-full)",
                             background: "var(--accent)",
+                            boxShadow: "0 0 12px var(--accent)",
+                            zIndex: 1,
                         }}
-                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
                     />
                 )}
             </AnimatePresence>
@@ -104,22 +116,13 @@ function DockItem({
 
 export default function Navbar() {
     const [active, setActive] = useState("hero");
-    const [mouseX, setMouseX] = useState<number | null>(null);
-    const navAreaRef = useRef<HTMLDivElement>(null);
     const { scrollY } = useScroll();
+    
+    // Using motion value instead of React state for extreme performance
+    const mouseX = useMotionValue(Infinity);
     const bgOpacity = useTransform(scrollY, [0, 100], [0, 1]);
 
-    // Throttled mouse tracking (~60fps)
-    const lastMouseUpdate = useRef(0);
-    const handleNavMouseMove = useCallback((e: React.MouseEvent) => {
-        const now = Date.now();
-        if (now - lastMouseUpdate.current > 16) {
-            setMouseX(e.clientX);
-            lastMouseUpdate.current = now;
-        }
-    }, []);
-
-    // Track active section
+    // Active section tracking via IntersectionObserver
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
@@ -157,62 +160,67 @@ export default function Navbar() {
                 zIndex: 100,
             }}
         >
-            {/* Dynamic background — solid semi-transparent (no backdrop-filter) */}
+            {/* End-to-end full width dynamic background */}
             <motion.div
                 style={{
                     position: "absolute",
                     inset: 0,
                     background: "var(--nav-bg)",
+                    backdropFilter: "blur(12px)",
+                    WebkitBackdropFilter: "blur(12px)",
                     opacity: bgOpacity,
                     borderBottom: "1px solid var(--border)",
+                    boxShadow: "var(--shadow-sm)",
                 }}
             />
 
             <div
                 style={{
                     position: "relative",
-                    maxWidth: 1200,
-                    margin: "0 auto",
-                    padding: "18px 28px",
+                    width: "100%", // Full width from edge to edge
+                    padding: "20px 40px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
                 }}
             >
-                {/* Logo */}
+                {/* Logo Area */}
                 <motion.button
                     onClick={() => scrollTo("hero")}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     style={{
                         background: "none",
                         border: "none",
                         cursor: "pointer",
                         fontFamily: "Inter, sans-serif",
-                        fontSize: "1.25rem",
-                        fontWeight: 700,
+                        fontSize: "1.4rem",
+                        fontWeight: 800,
                         color: "var(--text-primary)",
-                        letterSpacing: "-0.02em",
+                        letterSpacing: "-0.04em",
+                        display: "flex",
+                        alignItems: "center",
                     }}
                 >
-                    AP
-                    <span style={{ color: "var(--accent)" }}>.</span>
+                    AP<span style={{ color: "var(--accent)" }}>.</span>
                 </motion.button>
 
-                {/* Nav Links with dock magnification */}
+                {/* Highly optimized centered mac style Dock */}
                 <div
-                    ref={navAreaRef}
-                    onMouseMove={handleNavMouseMove}
-                    onMouseLeave={() => setMouseX(null)}
+                    onMouseMove={(e) => mouseX.set(e.pageX)}
+                    onMouseLeave={() => mouseX.set(Infinity)}
                     style={{
                         display: "flex",
-                        alignItems: "end",
-                        gap: 2,
-                        padding: "6px 8px",
-                        borderRadius: "var(--radius-lg)",
+                        alignItems: "flex-end",
+                        gap: 8,
+                        padding: "8px 12px",
+                        borderRadius: "100px", // Pill shape
                         background: "var(--bg-card)",
                         border: "1px solid var(--border)",
-                        boxShadow: "var(--shadow-sm)",
+                        boxShadow: "var(--shadow-md)",
+                        position: "absolute",
+                        left: "50%",
+                        transform: "translateX(-50%)",
                     }}
                     className="hidden md:flex"
                 >
@@ -227,18 +235,18 @@ export default function Navbar() {
                     ))}
                 </div>
 
-                {/* Right side */}
-                <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                {/* Right side actions */}
+                <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
                     <ThemeToggle />
                     <a
                         href="https://flowcv.com/resume/c75adcr9ji"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="btn-accent hidden sm:inline-flex"
-                        style={{ padding: "10px 22px", fontSize: "0.85rem" }}
+                        style={{ padding: "10px 24px", fontSize: "0.95rem", boxShadow: "var(--shadow-md)" }}
                     >
                         Resume
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M7 17l9.2-9.2M17 17V7H7" />
                         </svg>
                     </a>
