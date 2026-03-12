@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring, type MotionValue } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
@@ -18,7 +18,7 @@ function DockItem({
 }: {
     label: string;
     isActive: boolean;
-    mouseX: any;
+    mouseX: MotionValue<number>;
     onClick: () => void;
 }) {
     const ref = useRef<HTMLButtonElement>(null);
@@ -34,7 +34,7 @@ function DockItem({
     // Create the signature dock bulge and lift effect
     const scaleSync = useTransform(distance, [-120, 0, 120], [1, 1.35, 1]);
     const ySync = useTransform(distance, [-120, 0, 120], [0, -8, 0]);
-    
+
     const scale = useSpring(scaleSync, { mass: 0.1, stiffness: 350, damping: 20 });
     const y = useSpring(ySync, { mass: 0.1, stiffness: 350, damping: 20 });
 
@@ -117,7 +117,7 @@ function DockItem({
 export default function Navbar() {
     const [active, setActive] = useState("hero");
     const { scrollY } = useScroll();
-    
+
     // Using motion value instead of React state for extreme performance
     const mouseX = useMotionValue(Infinity);
     const bgOpacity = useTransform(scrollY, [0, 100], [0, 1]);

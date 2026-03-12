@@ -32,7 +32,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
     // Cleanup on unmount
     useEffect(() => {
-        return () => {};
+        return () => { };
     }, []);
 
     const toggleTheme = useCallback(() => {
@@ -46,6 +46,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useTheme() {
     const ctx = useContext(ThemeContext);
     if (!ctx) throw new Error("useTheme must be used within ThemeProvider");

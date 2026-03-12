@@ -1,388 +1,207 @@
-import { useRef, useEffect } from "react";
-import { motion, useInView } from "framer-motion";
-import SectionReveal, { StaggerContainer, StaggerItem } from "./SectionReveal";
+import { useRef } from "react";
+import { motion, useScroll, useSpring } from "framer-motion";
+import { useTheme } from "../context/ThemeContext";
 
-/* ─── Animated counter ────────────────────────────────────── */
-function Counter({ target, suffix = "" }: { target: number; suffix?: string }) {
-    const ref = useRef<HTMLSpanElement>(null);
-    const inView = useInView(ref, { once: true });
-
-    useEffect(() => {
-        if (!inView || !ref.current) return;
-        const duration = 1500;
-        const startTime = performance.now();
-        let rafId: number;
-
-        const tick = (now: number) => {
-            const elapsed = now - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            // Ease out cubic
-            const eased = 1 - Math.pow(1 - progress, 3);
-            const value = Math.round(eased * target);
-            if (ref.current) ref.current.textContent = value + suffix;
-            if (progress < 1) {
-                rafId = requestAnimationFrame(tick);
-            }
-        };
-        rafId = requestAnimationFrame(tick);
-
-        return () => cancelAnimationFrame(rafId);
-    }, [inView, target, suffix]);
-
-    return <span ref={ref}>0{suffix}</span>;
-}
-
-/* ─── Timeline data ───────────────────────────────────────── */
-const experience = [
+/* ─── Shared Data (Scalable) ──────────────────────────────── */
+const timelineData = [
     {
-        logo: "/images/udaan.png",
-        title: "Software Developer Intern",
-        org: "Udaan",
-        period: "2024",
-        bullets: [
-            "Worked with the internal warehouse management application, building features for inventory tracking and order processing pipelines.",
-            "Collaborated with backend teams on data operations, optimizing query performance and improving data integrity across services.",
-            "Contributed to CI/CD workflows and participated in agile sprints with cross-functional engineering teams.",
-        ],
-    },
-];
-
-const education = [
-    {
-        logo: "/images/mnnit.png",
-        title: "Bachelor's Degree in Engineering",
-        org: "Motilal Nehru National Institute of Technology, Allahabad",
-        period: "2021 – 2025",
-        bullets: [
-            "Pursuing B.Tech with a focus on computer science fundamentals, data structures, algorithms, and systems programming.",
-            "Active participant in coding clubs and hackathons, building full-stack applications and competitive programming skills.",
-        ],
-    },
-    {
-        logo: "/images/aprjc.png",
-        title: "Class XII — Intermediate",
-        org: "AP Residential Jr College, Venkatagiri",
-        period: "2019 – 2021",
-        bullets: [
-            "Completed intermediate education with a focus on Mathematics, Physics, and Chemistry.",
-            "Developed strong analytical and problem-solving foundations that led to engineering pursuits.",
-        ],
-    },
-];
-
-const stats = [
-    { value: 1, suffix: "+", label: "Year Experience" },
-    { value: 4, suffix: "+", label: "Projects Built" },
-    { value: 13, suffix: "+", label: "Technologies" },
-    { value: 1, suffix: "", label: "Internship" },
-];
-
-export default function About() {
-    return (
-        <section id="about" className="section-padding" style={{ position: "relative" }}>
-            <div className="section-container">
-                {/* Section Header */}
-                <SectionReveal>
-                    <div style={{ textAlign: "center", marginBottom: 80 }}>
-                        <p
-                            style={{
-                                fontSize: "0.85rem",
-                                fontWeight: 600,
-                                color: "var(--accent)",
-                                letterSpacing: "0.15em",
-                                textTransform: "uppercase",
-                                marginBottom: 12,
-                            }}
-                        >
-                            About Me
-                        </p>
-                        <h2
-                            className="gradient-text"
-                            style={{
-                                fontSize: "clamp(2rem, 5vw, 3.2rem)",
-                                fontWeight: 800,
-                                letterSpacing: "-0.02em",
-                                lineHeight: 1.15,
-                                marginBottom: 20,
-                            }}
-                        >
-                            Building software that matters
-                        </h2>
-                        <p
-                            style={{
-                                fontSize: "1.05rem",
-                                lineHeight: 1.8,
-                                color: "var(--text-secondary)",
-                                maxWidth: 700,
-                                margin: "0 auto",
-                            }}
-                        >
-                            I'm a final-year engineering student at NIT Allahabad with a deep passion for
-                            full-stack development. I believe great software comes from the intersection of
-                            clean architecture, thoughtful user experience, and relentless iteration. My
-                            approach combines hands-on backend engineering with a keen eye for frontend polish —
-                            because details define the difference between good and exceptional.
-                        </p>
-                    </div>
-                </SectionReveal>
-
-                {/* Stats — clean with left accent bar */}
-                <SectionReveal delay={0.1}>
-                    <div
-                        style={{
-                            display: "grid",
-                            gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-                            gap: 24,
-                            marginBottom: 80,
-                        }}
-                    >
-                        {stats.map((s, i) => (
-                            <motion.div
-                                key={i}
-                                whileHover={{ y: -4 }}
-                                style={{
-                                    padding: "28px 20px",
-                                    textAlign: "center",
-                                    background: "var(--bg-card)",
-                                    border: "1px solid var(--border)",
-                                    borderRadius: "var(--radius-lg)",
-                                    position: "relative",
-                                    overflow: "hidden",
-                                    transition: "border-color 0.3s ease, box-shadow 0.3s ease",
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.borderColor = "var(--border-hover)";
-                                    e.currentTarget.style.boxShadow = "var(--shadow-glow)";
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.borderColor = "var(--border)";
-                                    e.currentTarget.style.boxShadow = "none";
-                                }}
-                            >
-                                {/* Left accent bar */}
-                                <div
-                                    style={{
-                                        position: "absolute",
-                                        left: 0,
-                                        top: "20%",
-                                        bottom: "20%",
-                                        width: 3,
-                                        background: "var(--accent)",
-                                        borderRadius: "0 2px 2px 0",
-                                    }}
-                                />
-                                <div
-                                    style={{
-                                        fontSize: "2.5rem",
-                                        fontWeight: 900,
-                                        color: "var(--accent)",
-                                        lineHeight: 1,
-                                        marginBottom: 8,
-                                    }}
-                                >
-                                    <Counter target={s.value} suffix={s.suffix} />
-                                </div>
-                                <div
-                                    style={{
-                                        fontSize: "0.8rem",
-                                        color: "var(--text-tertiary)",
-                                        fontWeight: 500,
-                                        letterSpacing: "0.04em",
-                                        textTransform: "uppercase",
-                                    }}
-                                >
-                                    {s.label}
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
-                </SectionReveal>
-
-                {/* Experience & Education */}
-                <div
-                    style={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 450px), 1fr))",
-                        gap: 60,
-                    }}
-                >
-                    {/* Work Experience */}
-                    <SectionReveal direction="left">
-                        <h3
-                            style={{
-                                fontSize: "1.3rem",
-                                fontWeight: 700,
-                                marginBottom: 32,
-                                color: "var(--text-primary)",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 10,
-                            }}
-                        >
-                            <span
-                                style={{
-                                    display: "inline-block",
-                                    width: 24,
-                                    height: 2,
-                                    background: "var(--accent)",
-                                    borderRadius: 1,
-                                }}
-                            />
-                            Work Experience
-                        </h3>
-                        <div className="timeline">
-                            <StaggerContainer>
-                                {experience.map((item, i) => (
-                                    <StaggerItem key={i}>
-                                        <div className="timeline-item">
-                                            <TimelineCard {...item} />
-                                        </div>
-                                    </StaggerItem>
-                                ))}
-                            </StaggerContainer>
-                        </div>
-                    </SectionReveal>
-
-                    {/* Education */}
-                    <SectionReveal direction="right">
-                        <h3
-                            style={{
-                                fontSize: "1.3rem",
-                                fontWeight: 700,
-                                marginBottom: 32,
-                                color: "var(--text-primary)",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 10,
-                            }}
-                        >
-                            <span
-                                style={{
-                                    display: "inline-block",
-                                    width: 24,
-                                    height: 2,
-                                    background: "var(--accent)",
-                                    borderRadius: 1,
-                                }}
-                            />
-                            Education
-                        </h3>
-                        <div className="timeline">
-                            <StaggerContainer>
-                                {education.map((item, i) => (
-                                    <StaggerItem key={i}>
-                                        <div className="timeline-item">
-                                            <TimelineCard {...item} />
-                                        </div>
-                                    </StaggerItem>
-                                ))}
-                            </StaggerContainer>
-                        </div>
-                    </SectionReveal>
-                </div>
+        type: "intro",
+        title: "The Philosophy",
+        color: "#FF3366", // Vibrant Neon Pink
+        rotation: -3,
+        content: (
+            <div style={{ fontSize: "1.2rem", lineHeight: 1.8, fontWeight: 500 }}>
+                <p>
+                    I believe great software doesn't just work—it makes you <em>feel</em> something.
+                </p>
+                <p style={{ marginTop: 16 }}>
+                    As a final-year engineering student at NIT Allahabad, I approach application architecture with the precision of a structural engineer and the creative defiance of a designer.
+                </p>
+                <p style={{ marginTop: 16 }}>
+                    Every pixel is calculated. Every query is optimized. The standard is excellence.
+                </p>
             </div>
-        </section>
+        )
+    },
+    {
+        type: "experience",
+        title: "Udaan — SWE Intern",
+        color: "#00E676", // Acid Green
+        rotation: 2,
+        period: "2024",
+        content: (
+            <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+                <li style={{ marginBottom: 12, position: "relative", paddingLeft: 20 }}>
+                    <span style={{ position: "absolute", left: 0, top: 8, width: 8, height: 8, background: "currentColor", borderRadius: "50%" }} />
+                    Optimized internal warehouse management applications and critical inventory tracking pipelines.
+                </li>
+                <li style={{ marginBottom: 12, position: "relative", paddingLeft: 20 }}>
+                    <span style={{ position: "absolute", left: 0, top: 8, width: 8, height: 8, background: "currentColor", borderRadius: "50%" }} />
+                    Collaborated closely with backend teams on data operations, massively improving query performance.
+                </li>
+                <li style={{ position: "relative", paddingLeft: 20 }}>
+                    <span style={{ position: "absolute", left: 0, top: 8, width: 8, height: 8, background: "currentColor", borderRadius: "50%" }} />
+                    Contributed directly to CI/CD workflows and agile sprints with cross-functional teams.
+                </li>
+            </ul>
+        )
+    },
+    {
+        type: "education",
+        title: "NIT Allahabad",
+        color: "#FFEA00", // Canary Yellow
+        rotation: -2,
+        period: "B.Tech CS • 2021 – 2025",
+        content: (
+            <p style={{ fontSize: "1.05rem", lineHeight: 1.6 }}>
+                Deep-diving into computer science fundamentals, data structures, algorithms, and systems programming.
+                <br/><br/>
+                Active builder in coding clubs and participant in high-stakes hackathons, focusing on highly scalable full-stack applications.
+            </p>
+        )
+    },
+    {
+        type: "tools",
+        title: "The Arsenal",
+        color: "#D500F9", // Electric Purple
+        rotation: 4,
+        content: (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
+                {["TypeScript", "React", "Next.js", "Node.js", "PostgreSQL", "Framer Motion", "Go", "Docker", "AWS"].map(tech => (
+                    <span key={tech} style={{
+                        padding: "8px 16px",
+                        border: "2px solid currentColor",
+                        fontWeight: 700,
+                        fontSize: "0.9rem"
+                    }}>
+                        {tech}
+                    </span>
+                ))}
+            </div>
+        )
+    }
+];
+
+/* ─── Parallax Node Component ─────────────────────────────── */
+function ParallaxNode({ 
+    data, 
+    index, 
+    isLight 
+}: { 
+    data: typeof timelineData[0], 
+    index: number, 
+    isLight: boolean 
+}) {
+    const isEven = index % 2 === 0;
+    const alignClass = isEven ? "left" : "right";
+    
+    // In Dark Mode, it's a pure white HUD pane (no rotation, no crazy colors).
+    // In Light Mode, it's a vibrant, rotated paper-cutout.
+    const rotation = isLight ? data.rotation : 0;
+    const shadowColor = isLight ? data.color : "rgba(0,0,0,0)";
+    
+    const style: React.CSSProperties = {
+        alignSelf: isEven ? "flex-start" : "flex-end",
+        transform: `rotate(${rotation}deg)`,
+        boxShadow: isLight ? `12px 12px 0px ${shadowColor}` : undefined,
+    };
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 100, rotate: rotation - (isEven ? -10 : 10) }}
+            whileInView={{ opacity: 1, y: 0, rotate: rotation }}
+            viewport={{ once: true, margin: "-150px" }}
+            transition={{ type: "spring", stiffness: 60, damping: 15 }}
+            className={`parallax-node ${alignClass}`}
+            style={style}
+        >
+            <div className="tether-branch" />
+            
+            <div style={{ paddingBottom: 24, marginBottom: 24, borderBottom: `2px solid ${isLight ? data.color : "rgba(255,255,255,0.2)"}` }}>
+                <h3 style={{ fontSize: "2rem", fontWeight: 900, textTransform: "uppercase", letterSpacing: "-0.02em" }}>
+                    {data.title}
+                </h3>
+                {data.period && (
+                    <div style={{ fontSize: "0.9rem", fontWeight: 700, opacity: 0.8, marginTop: 8 }}>
+                        {data.period}
+                    </div>
+                )}
+            </div>
+            
+            <div style={{ color: isLight ? "#333" : "rgba(255,255,255,0.85)" }}>
+                {data.content}
+            </div>
+        </motion.div>
     );
 }
 
-/* ─── Timeline card sub-component ─────────────────────────── */
-function TimelineCard({
-    logo,
-    title,
-    org,
-    period,
-    bullets,
-}: {
-    logo: string;
-    title: string;
-    org: string;
-    period: string;
-    bullets: string[];
-}) {
+/* ─── Main Section ────────────────────────────────────────── */
+export default function About() {
+    const { theme } = useTheme();
+    const isLightMode = theme === "light";
+    const containerRef = useRef<HTMLDivElement>(null);
+    
+    // Animate the tether extending down as you scroll
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start end", "end start"]
+    });
+    
+    const scaleY = useSpring(scrollYProgress, {
+        stiffness: 100,
+        damping: 30,
+        restDelta: 0.001
+    });
+
     return (
-        <motion.div
-            whileHover={{ y: -2 }}
-            style={{
-                padding: 24,
-                background: "var(--bg-card)",
-                border: "1px solid var(--border)",
-                borderRadius: "var(--radius-lg)",
-                transition: "border-color 0.3s ease, box-shadow 0.3s ease",
-            }}
-            onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "var(--border-hover)";
-                e.currentTarget.style.boxShadow = "var(--shadow-md)";
-            }}
-            onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "var(--border)";
-                e.currentTarget.style.boxShadow = "none";
-            }}
-        >
-            <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 14,
-                    marginBottom: 14,
-                }}
-            >
-                <img
-                    src={logo}
-                    alt={org}
-                    style={{
-                        width: 44,
-                        height: 44,
-                        borderRadius: "var(--radius-sm)",
-                        objectFit: "contain",
-                        background: "var(--bg-card-hover)",
-                        padding: 4,
-                    }}
-                />
-                <div>
-                    <h4 style={{ fontSize: "1rem", fontWeight: 600, lineHeight: 1.3 }}>{title}</h4>
-                    <p style={{ fontSize: "0.8rem", color: "var(--text-tertiary)" }}>{org}</p>
-                </div>
-            </div>
-            <p
-                style={{
-                    fontSize: "0.75rem",
-                    color: "var(--accent)",
-                    fontWeight: 600,
-                    marginBottom: 12,
-                    letterSpacing: "0.05em",
-                    textTransform: "uppercase",
-                }}
-            >
-                {period}
-            </p>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                {bullets.map((b, i) => (
-                    <li
-                        key={i}
-                        style={{
-                            fontSize: "0.88rem",
-                            lineHeight: 1.7,
-                            color: "var(--text-secondary)",
-                            marginBottom: 8,
-                            paddingLeft: 16,
-                            position: "relative",
-                        }}
-                    >
-                        <span
-                            style={{
-                                position: "absolute",
-                                left: 0,
-                                top: "0.5em",
-                                width: 5,
-                                height: 5,
-                                borderRadius: "50%",
-                                background: "var(--accent-glow-strong)",
-                            }}
+        <section id="about" className="section-padding" style={{ position: "relative", minHeight: "150vh" }}>
+            <div className="section-container" style={{ position: "relative", maxWidth: 1000, margin: "0 auto" }}>
+                
+                {/* Section Header */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="parallax-center-node"
+                    style={{ marginBottom: 120 }}
+                >
+                    <p style={{
+                        fontSize: "0.85rem", fontWeight: 800, color: isLightMode ? "#1a1a2e" : "#ffffff",
+                        letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 16
+                    }}>
+                        Chapter 01
+                    </p>
+                    <h2 style={{
+                        fontSize: "clamp(3rem, 8vw, 5.5rem)", fontWeight: 900,
+                        letterSpacing: "-0.04em", lineHeight: 1,
+                        textTransform: "uppercase"
+                    }}>
+                        The Journey
+                    </h2>
+                </motion.div>
+
+                {/* Vertical Timeline Container */}
+                <div ref={containerRef} style={{ position: "relative", display: "flex", flexDirection: "column", padding: "0 20px" }}>
+                    
+                    {/* The Central Tether */}
+                    <motion.div 
+                        className="parallax-tether" 
+                        style={{ scaleY, transformOrigin: "top center" }} 
+                    />
+
+                    {/* Timeline Nodes */}
+                    {timelineData.map((data, idx) => (
+                        <ParallaxNode 
+                            key={idx} 
+                            data={data} 
+                            index={idx} 
+                            isLight={isLightMode} 
                         />
-                        {b}
-                    </li>
-                ))}
-            </ul>
-        </motion.div>
+                    ))}
+
+                </div>
+
+            </div>
+        </section>
     );
 }

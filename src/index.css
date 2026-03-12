@@ -112,7 +112,7 @@ body {
     overflow-x: hidden;
     line-height: 1.7;
     transition: background var(--transition-speed) ease,
-                color var(--transition-speed) ease;
+        color var(--transition-speed) ease;
 }
 
 #root {
@@ -211,7 +211,7 @@ body {
 
 :root .card-gradient-border:hover {
     box-shadow: inset 0 1px 0 rgba(78, 205, 196, 0.1),
-                var(--shadow-glow);
+        var(--shadow-glow);
 }
 
 /* Light mode: clean shadow */
@@ -271,9 +271,9 @@ body {
     font-weight: 500;
     color: var(--text-primary);
     transition: transform 0.3s ease,
-                border-color 0.3s ease,
-                box-shadow 0.3s ease,
-                background 0.3s ease;
+        border-color 0.3s ease,
+        box-shadow 0.3s ease,
+        background 0.3s ease;
     cursor: default;
     position: relative;
     overflow: hidden;
@@ -324,8 +324,8 @@ body {
     font-size: 0.95rem;
     outline: none;
     transition: border-color 0.3s ease,
-                box-shadow 0.3s ease,
-                background 0.3s ease;
+        box-shadow 0.3s ease,
+        background 0.3s ease;
 }
 
 .form-input::placeholder {
@@ -477,6 +477,65 @@ body {
 
 [data-theme="light"] .global-starry-canvas {
     display: none;
+}
+
+/* Parallax Tether (Vertical Timeline Line) */
+.parallax-tether {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    transform: translateX(-50%);
+    transition: background 0.6s ease;
+    z-index: 0;
+}
+
+:root .parallax-tether {
+    /* Pure white glowing thin line in space */
+    background: linear-gradient(to bottom,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="light"] .parallax-tether {
+    /* Thick, jagged dark ink line */
+    background: #1a1a2e;
+    width: 8px; /* Thicker for the ink/magazine feel */
+    box-shadow: none;
+}
+
+/* Node Tether Branch (Connects node to main vertical line) */
+.tether-branch {
+    position: absolute;
+    top: 50%;
+    height: 2px;
+    width: 60px; /* Slightly longer to clearly cross the gap */
+    transition: background 0.6s ease;
+    z-index: 0;
+}
+
+.parallax-node.left .tether-branch {
+    right: -60px;
+}
+
+.parallax-node.right .tether-branch {
+    left: -60px;
+}
+
+:root .tether-branch {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="light"] .tether-branch {
+    background: #1a1a2e;
+    height: 8px; /* Match thick ink line */
+    box-shadow: none;
 }
 
 /* Folder body */
@@ -646,24 +705,30 @@ body {
 .footer-border {
     height: 1px;
     background: linear-gradient(90deg,
-        transparent,
-        var(--border-hover),
-        var(--accent-glow-strong),
-        var(--border-hover),
-        transparent);
+            transparent,
+            var(--border-hover),
+            var(--accent-glow-strong),
+            var(--border-hover),
+            transparent);
     background-size: 200% 100%;
     animation: footer-border-shift 8s linear infinite;
 }
 
 @keyframes footer-border-shift {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
 }
 
 /* ═══════════════════════════════════════════════════════════════
    PREFERS REDUCED MOTION
    ═══════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {
