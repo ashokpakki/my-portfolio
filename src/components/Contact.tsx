@@ -1,34 +1,46 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { SiLinkedin, SiGithub, SiLeetcode } from "react-icons/si";
-import { HiOutlineMail } from "react-icons/hi";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { Code2, Mail, Send } from "lucide-react";
+import { SiGithub, SiLinkedin } from "react-icons/si";
 import SectionReveal from "./SectionReveal";
 
 const contactLinks = [
     {
-        icon: <HiOutlineMail size={20} />,
-        label: "pakkiashok18@gmail.com",
+        icon: <Mail size={24} strokeWidth={2} />,
+        label: "Email",
         href: "mailto:pakkiashok18@gmail.com",
+        color: "var(--color-1)"
     },
     {
-        icon: <SiLinkedin size={18} />,
+        icon: <SiLinkedin size={22} />,
         label: "LinkedIn",
         href: "https://www.linkedin.com/in/pakkiashok/",
+        color: "var(--color-2)"
     },
     {
-        icon: <SiGithub size={18} />,
+        icon: <SiGithub size={22} />,
         label: "GitHub",
         href: "https://github.com/ashokpakki",
+        color: "var(--color-3)"
     },
     {
-        icon: <SiLeetcode size={18} />,
+        icon: <Code2 size={24} strokeWidth={2} />,
         label: "LeetCode",
         href: "https://www.leetcode.com/u/Nightout/",
+        color: "var(--color-4)"
     },
 ];
 
 export default function Contact() {
     const [submitted, setSubmitted] = useState(false);
+    
+    // Tiny tilt on the form purely for fun
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
+    const smoothX = useSpring(x, { damping: 50, stiffness: 400 });
+    const smoothY = useSpring(y, { damping: 50, stiffness: 400 });
+    const rotateX = useTransform(smoothY, [-0.5, 0.5], ["5deg", "-5deg"]);
+    const rotateY = useTransform(smoothX, [-0.5, 0.5], ["-5deg", "5deg"]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -37,280 +49,132 @@ export default function Contact() {
     };
 
     return (
-        <section id="contact" className="section-padding" style={{ position: "relative" }}>
-            <div className="section-container">
-                {/* Header */}
+        <section id="contact" className="section-padding relative overflow-hidden bg-transparent">
+            {/* Massive background text */}
+            <div className="absolute top-[20%] right-[-10vw] flex flex-col pointer-events-none opacity-[0.03] select-none text-[20vw] font-black leading-none uppercase z-0">
+                <span>CONNECT</span>
+                <span>COLLAB</span>
+            </div>
+
+            <div className="container-main mx-auto relative z-10">
                 <SectionReveal>
-                    <div style={{ textAlign: "center", marginBottom: 64 }}>
-                        <p
-                            style={{
-                                fontSize: "0.85rem",
-                                fontWeight: 600,
-                                color: "var(--accent)",
-                                letterSpacing: "0.15em",
-                                textTransform: "uppercase",
-                                marginBottom: 12,
-                            }}
-                        >
-                            Get in Touch
+                    <div className="text-center md:text-left mb-20 max-w-4xl">
+                        <p className="text-[var(--color-3)] font-black tracking-[0.2em] uppercase text-sm mb-4">
+                            Let's Build It
                         </p>
-                        <h2
-                            className="gradient-text"
-                            style={{
-                                fontSize: "clamp(2rem, 5vw, 3.2rem)",
-                                fontWeight: 800,
-                                letterSpacing: "-0.02em",
-                                lineHeight: 1.15,
-                                marginBottom: 20,
-                            }}
-                        >
-                            Let's build something together
+                        <h2 className="text-[clamp(4rem,9vw,7rem)] font-black tracking-tighter uppercase mb-6 drop-shadow-lg leading-none">
+                            Drop a <br />
+                            <span className="text-gradient-animated italic">Line</span>
                         </h2>
-                        <p
-                            style={{
-                                fontSize: "1.05rem",
-                                lineHeight: 1.8,
-                                color: "var(--text-secondary)",
-                                maxWidth: 600,
-                                margin: "0 auto",
-                            }}
-                        >
-                            Whether you have a project idea, want to collaborate, or just want
-                            to say hello — my inbox is always open. I'll get back to you as
-                            soon as possible.
-                        </p>
                     </div>
                 </SectionReveal>
 
-                {/* Split layout */}
-                <div
-                    style={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 380px), 1fr))",
-                        gap: 48,
-                        alignItems: "start",
-                    }}
-                >
-                    {/* Left — Contact info */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start pb-[10vh]">
                     <SectionReveal direction="left" delay={0.1}>
-                        <div>
-                            <h3
-                                style={{
-                                    fontSize: "1.2rem",
-                                    fontWeight: 700,
-                                    marginBottom: 16,
-                                }}
-                            >
-                                Reach me directly
-                            </h3>
-                            <p
-                                style={{
-                                    fontSize: "0.95rem",
-                                    lineHeight: 1.7,
-                                    color: "var(--text-secondary)",
-                                    marginBottom: 32,
-                                }}
-                            >
-                                Currently based in Hyderabad, India. Open to full-time roles, freelance
-                                projects, and interesting conversations about technology and engineering.
+                        <div className="flex flex-col gap-8">
+                            <p className="text-xl md:text-2xl font-bold tracking-tight text-foreground leading-relaxed">
+                                Always open to full-time roles, freelance, or deep conversations about web architecture. Based in Hyderabad. 
                             </p>
-
-                            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                            
+                            <div className="grid grid-cols-2 gap-4 mt-4">
                                 {contactLinks.map((link) => (
                                     <motion.a
                                         key={link.label}
                                         href={link.href}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        whileHover={{ x: 4 }}
-                                        style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: 14,
-                                            padding: "14px 20px",
-                                            borderRadius: "var(--radius-md)",
-                                            border: "1px solid var(--border)",
-                                            background: "var(--bg-card)",
-                                            color: "var(--text-secondary)",
-                                            textDecoration: "none",
-                                            fontSize: "0.9rem",
-                                            fontWeight: 500,
-                                            transition: "color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease",
+                                        whileHover={{ scale: 1.05, y: -4 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className="flex flex-col items-center justify-center gap-4 aspect-square rounded-[2rem] border border-[var(--border)] glass-super transition-all duration-300"
+                                        style={{ boxShadow: `0 10px 30px ${link.color}15` }}
+                                        onHoverStart={(e) => {
+                                            const el = e.currentTarget as HTMLElement;
+                                            el.style.backgroundColor = link.color;
+                                            el.style.color = "#000";
+                                            el.style.boxShadow = `0 0 40px ${link.color}80`;
+                                            // Optional invert to black icons if possible, handled mostly by text color inherit
                                         }}
-                                        onMouseEnter={(e) => {
-                                            e.currentTarget.style.color = "var(--accent)";
-                                            e.currentTarget.style.borderColor = "var(--accent)";
-                                            e.currentTarget.style.boxShadow = "var(--shadow-glow)";
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.currentTarget.style.color = "var(--text-secondary)";
-                                            e.currentTarget.style.borderColor = "var(--border)";
-                                            e.currentTarget.style.boxShadow = "none";
+                                        onHoverEnd={(e) => {
+                                            const el = e.currentTarget as HTMLElement;
+                                            el.style.backgroundColor = "";
+                                            el.style.color = "";
+                                            el.style.boxShadow = `0 10px 30px ${link.color}15`;
                                         }}
                                     >
-                                        <span style={{ color: "var(--accent)" }}>{link.icon}</span>
-                                        {link.label}
+                                        <div className="mb-2">{link.icon}</div>
+                                        <span className="font-extrabold uppercase tracking-wider text-sm">{link.label}</span>
                                     </motion.a>
                                 ))}
                             </div>
                         </div>
                     </SectionReveal>
 
-                    {/* Right — Form */}
                     <SectionReveal direction="right" delay={0.2}>
-                        <div
-                            style={{
-                                padding: 32,
-                                background: "var(--bg-card)",
-                                border: "1px solid var(--border)",
-                                borderRadius: "var(--radius-lg)",
+                        <motion.div 
+                            style={{ rotateX, rotateY, perspective: 1000 }}
+                            onMouseMove={(e) => {
+                                const rect = e.currentTarget.getBoundingClientRect();
+                                x.set((e.clientX - rect.left) / rect.width - 0.5);
+                                y.set((e.clientY - rect.top) / rect.height - 0.5);
                             }}
+                            onMouseLeave={() => {
+                                x.set(0); y.set(0);
+                            }}
+                            className="p-8 md:p-12 rounded-[2rem] border-2 border-[var(--color-1)] bg-card shadow-[0_20px_50px_var(--color-1)] backdrop-blur-3xl transition-shadow"
                         >
                             {submitted ? (
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    style={{
-                                        textAlign: "center",
-                                        padding: "40px 20px",
-                                    }}
+                                    className="py-16 text-center"
                                 >
-                                    <div
-                                        style={{
-                                            width: 56,
-                                            height: 56,
-                                            borderRadius: "50%",
-                                            background: "var(--accent-glow)",
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            margin: "0 auto 16px",
-                                        }}
-                                    >
-                                        <svg
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="var(--accent)"
-                                            strokeWidth="2.5"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        >
-                                            <path d="M20 6L9 17l-5-5" />
-                                        </svg>
+                                    <div className="w-20 h-20 mx-auto rounded-full bg-[var(--color-1)] flex items-center justify-center mb-8 text-black shadow-[0_0_30px_var(--color-1)] animate-bounce">
+                                        <Send size={32} />
                                     </div>
-                                    <h3 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: 8 }}>
-                                        Message sent!
-                                    </h3>
-                                    <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>
-                                        Thanks for reaching out. I'll get back to you soon.
-                                    </p>
+                                    <h3 className="text-4xl font-black text-foreground mb-4 uppercase tracking-tighter">Transmission Sent</h3>
+                                    <p className="text-xl font-medium text-muted-foreground">Thanks for reaching out. I'll get back to you soon.</p>
                                 </motion.div>
                             ) : (
-                                <form
-                                    onSubmit={handleSubmit}
-                                    style={{
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        gap: 16,
-                                    }}
-                                >
-                                    <div>
-                                        <label
-                                            style={{
-                                                display: "block",
-                                                fontSize: "0.8rem",
-                                                fontWeight: 600,
-                                                color: "var(--text-secondary)",
-                                                marginBottom: 6,
-                                                letterSpacing: "0.04em",
-                                                textTransform: "uppercase",
-                                            }}
-                                        >
-                                            Name
-                                        </label>
+                                <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                                    <div className="space-y-3 relative group">
+                                        <div className="absolute inset-0 bg-[var(--color-2)] -inset-1 rounded-xl blur opacity-0 group-focus-within:opacity-30 transition-opacity" />
                                         <input
                                             type="text"
-                                            placeholder="Your name"
-                                            className="form-input"
+                                            placeholder="Who are you?"
+                                            className="relative w-full bg-background border border-border rounded-xl px-6 py-4 text-lg font-semibold text-foreground placeholder-muted-foreground focus:outline-none focus:border-[var(--color-2)] transition-all uppercase tracking-wide"
                                             required
                                         />
                                     </div>
-                                    <div>
-                                        <label
-                                            style={{
-                                                display: "block",
-                                                fontSize: "0.8rem",
-                                                fontWeight: 600,
-                                                color: "var(--text-secondary)",
-                                                marginBottom: 6,
-                                                letterSpacing: "0.04em",
-                                                textTransform: "uppercase",
-                                            }}
-                                        >
-                                            Email
-                                        </label>
+                                    <div className="space-y-3 relative group">
+                                        <div className="absolute inset-0 bg-[var(--color-3)] -inset-1 rounded-xl blur opacity-0 group-focus-within:opacity-30 transition-opacity" />
                                         <input
                                             type="email"
-                                            placeholder="you@example.com"
-                                            className="form-input"
+                                            placeholder="Where can I reach you?"
+                                            className="relative w-full bg-background border border-border rounded-xl px-6 py-4 text-lg font-semibold text-foreground placeholder-muted-foreground focus:outline-none focus:border-[var(--color-3)] transition-all uppercase tracking-wide"
                                             required
                                         />
                                     </div>
-                                    <div>
-                                        <label
-                                            style={{
-                                                display: "block",
-                                                fontSize: "0.8rem",
-                                                fontWeight: 600,
-                                                color: "var(--text-secondary)",
-                                                marginBottom: 6,
-                                                letterSpacing: "0.04em",
-                                                textTransform: "uppercase",
-                                            }}
-                                        >
-                                            Message
-                                        </label>
+                                    <div className="space-y-3 relative group">
+                                        <div className="absolute inset-0 bg-[var(--color-4)] -inset-1 rounded-xl blur opacity-0 group-focus-within:opacity-30 transition-opacity" />
                                         <textarea
-                                            placeholder="Tell me about your project or idea..."
+                                            placeholder="What's the mission?"
                                             rows={5}
-                                            className="form-input"
-                                            style={{ resize: "vertical", minHeight: 120 }}
+                                            className="relative w-full bg-background border border-border rounded-xl px-6 py-4 text-lg font-semibold text-foreground placeholder-muted-foreground focus:outline-none focus:border-[var(--color-4)] transition-all uppercase tracking-wide resize-y min-h-[160px]"
                                             required
                                         />
                                     </div>
                                     <motion.button
                                         type="submit"
-                                        className="btn-accent"
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
-                                        style={{
-                                            width: "100%",
-                                            justifyContent: "center",
-                                            padding: "14px 28px",
-                                            marginTop: 8,
-                                            fontSize: "0.95rem",
-                                        }}
+                                        className="w-full flex items-center justify-center gap-4 bg-foreground text-background font-black text-lg uppercase tracking-widest py-5 rounded-xl mt-6 hover:shadow-[0_0_30px_var(--color-1)] transition-all hover:bg-[var(--color-1)] hover:text-black border-2 border-transparent"
                                     >
-                                        Send Message
-                                        <svg
-                                            width="18"
-                                            height="18"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        >
-                                            <line x1="22" y1="2" x2="11" y2="13" />
-                                            <polygon points="22 2 15 22 11 13 2 9 22 2" />
-                                        </svg>
+                                        Initiate
+                                        <Send size={20} strokeWidth={3} />
                                     </motion.button>
                                 </form>
                             )}
-                        </div>
+                        </motion.div>
                     </SectionReveal>
                 </div>
             </div>

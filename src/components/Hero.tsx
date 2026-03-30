@@ -1,245 +1,108 @@
-import { motion } from "framer-motion";
-import { SiLinkedin, SiGithub, SiLeetcode } from "react-icons/si";
-import { HiOutlineMail } from "react-icons/hi";
-import { HiMapPin } from "react-icons/hi2";
-
-const socials = [
-    {
-        icon: <SiGithub size={18} />,
-        label: "GitHub",
-        href: "https://github.com/ashokpakki",
-    },
-    {
-        icon: <SiLinkedin size={18} />,
-        label: "LinkedIn",
-        href: "https://www.linkedin.com/in/pakkiashok/",
-    },
-    {
-        icon: <SiLeetcode size={18} />,
-        label: "LeetCode",
-        href: "https://www.leetcode.com/u/Nightout/",
-    },
-    {
-        icon: <HiOutlineMail size={18} />,
-        label: "Email",
-        href: "mailto:pakkiashok18@gmail.com",
-    },
-];
-
-const container = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: { staggerChildren: 0.12, delayChildren: 0.3 },
-    },
-};
-
-const fadeUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const },
-    },
-};
+import { motion, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { MapPin } from "lucide-react";
 
 export default function Hero() {
+    const { scrollY } = useScroll();
+    const yTransform = useTransform(scrollY, [0, 800], [0, 300]);
+    const opacityTransform = useTransform(scrollY, [0, 400], [1, 0]);
+
+    // Magnetic cursor effect for the massive text block itself
+    const containerRef = useRef<HTMLDivElement>(null);
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+
+    const smoothX = useSpring(mouseX, { damping: 50, stiffness: 400 });
+    const smoothY = useSpring(mouseY, { damping: 50, stiffness: 400 });
+
+    const rotateX = useTransform(smoothY, [-0.5, 0.5], ["5deg", "-5deg"]);
+    const rotateY = useTransform(smoothX, [-0.5, 0.5], ["-5deg", "5deg"]);
+
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            if (!containerRef.current) return;
+            const rect = containerRef.current.getBoundingClientRect();
+            const width = rect.width;
+            const height = rect.height;
+            const clientX = e.clientX - rect.left - width / 2;
+            const clientY = e.clientY - rect.top - height / 2;
+            
+            mouseX.set(clientX / width);
+            mouseY.set(clientY / height);
+        };
+
+        window.addEventListener("mousemove", handleMouseMove);
+        return () => window.removeEventListener("mousemove", handleMouseMove);
+    }, [mouseX, mouseY]);
+
     return (
         <section
             id="hero"
-            style={{
-                position: "relative",
-                minHeight: "100vh",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                overflow: "hidden",
-            }}
+            className="relative min-h-[110vh] flex flex-col items-center justify-center overflow-hidden"
+            style={{ perspective: 1000 }}
         >
-            {/* Content */}
             <motion.div
-                variants={container}
-                initial="hidden"
-                animate="visible"
+                ref={containerRef}
                 style={{
-                    position: "relative",
-                    zIndex: 2,
-                    textAlign: "center",
-                    maxWidth: 800,
-                    padding: "0 24px",
+                    y: yTransform,
+                    opacity: opacityTransform,
+                    rotateX,
+                    rotateY,
+                    transformStyle: "preserve-3d"
                 }}
+                className="z-10 w-full flex flex-col items-center justify-center pointer-events-none"
             >
-                {/* Role badge */}
-                <motion.div variants={fadeUp} style={{ marginBottom: 24 }}>
-                    <span
-                        style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: 8,
-                            padding: "8px 20px",
-                            borderRadius: "var(--radius-full)",
-                            border: "1px solid var(--border-hover)",
-                            background: "var(--bg-card)",
-                            fontSize: "0.85rem",
-                            fontWeight: 500,
-                            color: "var(--accent)",
-                            letterSpacing: "0.03em",
-                        }}
-                    >
-                        <span
-                            className="status-dot"
-                            style={{
-                                width: 8,
-                                height: 8,
-                                borderRadius: "50%",
-                                background: "var(--accent)",
-                                boxShadow: "0 0 12px var(--accent-glow-strong)",
-                                animation: "pulse-glow 2s ease-in-out infinite",
-                            }}
-                        />
-                        Available for Opportunities
-                    </span>
-                </motion.div>
-
-                {/* Name with depth/shadow for dark mode */}
-                <motion.h1
-                    variants={fadeUp}
-                    style={{
-                        fontSize: "clamp(5rem, 20vw, 8rem)",
-                        fontWeight: 900,
-                        lineHeight: 1.05,
-                        letterSpacing: "-0.03em",
-                        marginBottom: 20,
-                    }}
-                >
-                    <span style={{ color: "var(--text-primary)" }}>Ashok</span>{" "}
-                    <span className="gradient-text-animated">Pakki</span>
-                </motion.h1>
-
-                {/* Tagline */}
-                <motion.p
-                    variants={fadeUp}
-                    style={{
-                        fontSize: "clamp(1.05rem, 2.5vw, 1.3rem)",
-                        lineHeight: 1.7,
-                        color: "var(--text-secondary)",
-                        maxWidth: 600,
-                        margin: "0 auto 16px",
-                    }}
-                >
-                    Software developer who builds clean, performant web applications.
-                    Focused on crafting intuitive user experiences with React, Java, and
-                    modern backend architectures.
-                </motion.p>
-
-                {/* Location */}
                 <motion.div
-                    variants={fadeUp}
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 6,
-                        marginBottom: 32,
-                        color: "var(--text-tertiary)",
-                        fontSize: "0.9rem",
-                    }}
+                    initial={{ scale: 0.8, opacity: 0, filter: "blur(20px)" }}
+                    animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
+                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex flex-col items-center"
                 >
-                    <HiMapPin size={16} style={{ color: "var(--accent)" }} />
-                    Hyderabad, India
-                </motion.div>
+                    {/* The massive dynamic gradient title */}
+                    <h1 className="text-[clamp(5rem,22vw,18rem)] font-black leading-[0.8] tracking-[-0.04em] text-center mb-6">
+                        <span className="text-gradient-animated block transform-gpu translate-z-10">ASHOK</span>
+                        <span className="text-foreground block transform-gpu translate-z-[20px] drop-shadow-2xl">PAKKI</span>
+                    </h1>
 
-                {/* Social Links */}
-                <motion.div
-                    variants={fadeUp}
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 12,
-                        flexWrap: "wrap",
-                    }}
-                >
-                    {socials.map((s) => (
-                        <motion.a
-                            key={s.label}
-                            href={s.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={s.label}
-                            whileHover={{ y: -3, boxShadow: "0 0 24px var(--accent-glow)" }}
-                            whileTap={{ scale: 0.95 }}
-                            style={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: 8,
-                                padding: "10px 18px",
-                                borderRadius: "var(--radius-full)",
-                                border: "1px solid var(--border)",
-                                background: "var(--bg-card)",
-                                color: "var(--text-secondary)",
-                                textDecoration: "none",
-                                fontSize: "0.85rem",
-                                fontWeight: 500,
-                                transition: "color 0.3s ease, border-color 0.3s ease",
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.color = "var(--accent)";
-                                e.currentTarget.style.borderColor = "var(--accent)";
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.color = "var(--text-secondary)";
-                                e.currentTarget.style.borderColor = "var(--border)";
-                            }}
+                    <div className="flex flex-col sm:flex-row items-center gap-6 mt-12 px-6 pointer-events-auto" style={{ transform: "translateZ(30px)" }}>
+                        <div className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-[var(--color-1)] glass-super shadow-[0_0_30px_var(--color-1)] text-foreground font-semibold text-sm hover-glow-super cursor-default">
+                            <span className="relative flex h-3 w-3 mr-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-3)] opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-[var(--color-3)]"></span>
+                            </span>
+                            Available for hire
+                        </div>
+
+                        <a 
+                            href="#projects" 
+                            className="px-8 py-3 rounded-full bg-foreground text-background font-bold uppercase tracking-wider text-sm hover:scale-105 transition-transform"
                         >
-                            {s.icon}
-                            {s.label}
-                        </motion.a>
-                    ))}
+                            View Work
+                        </a>
+                    </div>
                 </motion.div>
             </motion.div>
 
-            {/* Scroll indicator — thin growing line */}
+            {/* Awwwards style aesthetic marker */}
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 2 }}
-                style={{
-                    position: "absolute",
-                    bottom: 40,
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: 8,
-                    color: "var(--text-tertiary)",
-                    fontSize: "0.7rem",
-                    letterSpacing: "0.15em",
-                    textTransform: "uppercase",
-                }}
+                transition={{ delay: 1.5 }}
+                className="absolute bottom-12 left-8 md:left-12 flex items-center gap-3 text-sm font-bold tracking-[0.2em] uppercase text-foreground z-20"
             >
-                <span>Scroll</span>
-                <motion.div
-                    style={{
-                        width: 1,
-                        height: 24,
-                        background: "var(--accent)",
-                        borderRadius: 1,
-                        transformOrigin: "top",
-                    }}
-                    animate={{ scaleY: [0, 1, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                />
+                <div className="w-8 h-[2px] bg-[var(--color-2)] shadow-[0_0_10px_var(--color-2)]" />
+                <span className="text-gradient-animated">Scroll Explorer</span>
             </motion.div>
-
-            {/* Pulse glow keyframe — inlined since it's compact */}
-            <style>{`
-                @keyframes pulse-glow {
-                    0%, 100% { box-shadow: 0 0 8px var(--accent-glow); }
-                    50% { box-shadow: 0 0 18px var(--accent-glow-strong); }
-                }
-            `}</style>
+            
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.5 }}
+                className="absolute bottom-12 right-8 md:right-12 hidden md:flex items-center gap-2 text-sm font-bold text-foreground z-20"
+            >
+                <MapPin size={16} className="text-[var(--color-1)] animate-bounce" />
+                Hyderabad
+            </motion.div>
         </section>
     );
 }

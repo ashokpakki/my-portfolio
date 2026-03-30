@@ -1,585 +1,164 @@
 import { useRef } from "react";
-import {
-    motion,
-    useScroll,
-    useTransform,
-    type MotionValue,
-} from "framer-motion";
+import { motion, useScroll, useTransform, useVelocity, useSpring } from "framer-motion";
+import { MoveUpRight } from "lucide-react";
 
-/* ═══════════════════════════════════════════════════════════════
-   PROJECT DATA
-   ═══════════════════════════════════════════════════════════════ */
 const projects = [
     {
-        title: "Writer AI",
-        description:
-            "An intelligent content-generation platform powered by the Grok AI API. Generates summaries, creative ideas, blog drafts, and structured content from simple prompts.",
+        title: "WRITER AI",
+        description: "Grok API powered generative AI content creation platform.",
         img: "/images/writerai.png",
         link: "https://writer-ai-six.vercel.app/login",
-        tags: ["React", "Node.js", "Grok API", "TailwindCSS"],
+        color: "var(--color-1)",
+        hex: "#ff3366" // Fallback reference
     },
     {
-        title: "Blog App",
-        description:
-            "A full-featured blogging platform with a minimal, distraction-free writing experience. Users can create, edit, and publish posts with rich text formatting.",
+        title: "BLOG SYSTEM",
+        description: "Scaleable minimal blogging platform with rich text.",
         img: "/images/blogapp.png",
         link: "https://github.com/ashokpakki/Blog-app-main",
-        tags: ["React", "Express", "MongoDB", "REST API"],
+        color: "var(--color-2)",
+        hex: "#ff9933"
     },
     {
-        title: "BlackJack Game",
-        description:
-            "A complete implementation of the classic card game in Java. Features realistic game logic including hit, stand, double-down mechanics, and dealer AI.",
+        title: "BLACKJACK",
+        description: "Classic dealer AI and casino game logic in Java.",
         img: "/images/blackjack.png",
         link: "https://github.com/ashokpakki/Blackjack",
-        tags: ["Java", "OOP", "Game Logic"],
+        color: "var(--color-3)",
+        hex: "#00ccff"
     },
     {
-        title: "Quote Generator",
-        description:
-            "A beautifully simple tool that surfaces curated inspirational quotes with a single click. Features smooth animations and share-to-social functionality.",
+        title: "QUOTES",
+        description: "A beautifully animated daily inspiration tool.",
         img: "/images/ran.png",
         link: "https://github.com/ashokpakki/ran",
-        tags: ["JavaScript", "CSS Animations", "API"],
+        color: "var(--color-4)",
+        hex: "#7b2cbf"
     },
 ];
 
-/* ═══════════════════════════════════════════════════════════════
-   SCROLL SEGMENT MATH
-   ═══════════════════════════════════════════════════════════════
-
-   Total segments = projects.length + 3:
-     Seg 0           → Folder bottom rises (back panel + active tab)
-     Seg 1..N        → Each project card rises, rotates, stacks
-                       Left text crossfades per segment
-     Seg N+1         → Folder cover closes over stacked cards
-     Seg N+2         → Entire folder zooms out + fades away
-
-   scrollYProgress maps [0, 1] across all segments uniformly.
-   Each segment occupies 1/TOTAL_SEGS of the progress range.
-   ═══════════════════════════════════════════════════════════════ */
-const N = projects.length;
-const TOTAL_SEGS = N + 3;
-const SEG = 1 / TOTAL_SEGS;
-
-function seg(i: number): [number, number] {
-    return [i * SEG, (i + 1) * SEG];
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   LEFT SIDE — Project text with dramatic crossfade
-   ═══════════════════════════════════════════════════════════════ */
-function ProjectText({
-    project,
-    index,
-    progress,
-}: {
-    project: (typeof projects)[number];
-    index: number;
-    progress: MotionValue<number>;
-}) {
-    const [s, e] = seg(index + 1);
-    const entryDur = SEG * 0.20;
-    const exitDur = SEG * 0.15;
-
-    const opacity = useTransform(
-        progress,
-        [s, s + entryDur, e - exitDur, e],
-        [0, 1, 1, 0]
-    );
-    const y = useTransform(
-        progress,
-        [s, s + entryDur, e - exitDur, e],
-        [60, 0, 0, -60]
-    );
-
-    return (
-        <motion.div
-            className="project-text-container"
-            style={{
-                position: "absolute",
-                inset: 0,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                opacity,
-                y,
-                willChange: "opacity, transform",
-            }}
-        >
-            {/* Project number */}
-            <span
-                style={{
-                    fontSize: "0.8rem",
-                    fontWeight: 600,
-                    color: "var(--accent)",
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
-                    marginBottom: 20,
-                }}
-            >
-                {String(index + 1).padStart(2, "0")} /{" "}
-                {String(N).padStart(2, "0")}
-            </span>
-
-            {/* Title */}
-            <h3
-                style={{
-                    fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
-                    fontWeight: 800,
-                    letterSpacing: "-0.02em",
-                    lineHeight: 1.15,
-                    marginBottom: 16,
-                    color: "var(--text-primary)",
-                }}
-            >
-                {project.title}
-            </h3>
-
-            {/* Description */}
-            <p
-                style={{
-                    fontSize: "1rem",
-                    lineHeight: 1.75,
-                    color: "var(--text-secondary)",
-                    marginBottom: 24,
-                    maxWidth: 480,
-                }}
-            >
-                {project.description}
-            </p>
-
-            {/* Stack tags */}
-            <div
-                style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: 8,
-                    marginBottom: 28,
-                }}
-            >
-                {project.tags.map((tag) => (
-                    <span
-                        key={tag}
-                        style={{
-                            fontSize: "0.75rem",
-                            fontWeight: 500,
-                            padding: "5px 14px",
-                            borderRadius: "var(--radius-full)",
-                            background: "var(--accent-glow)",
-                            color: "var(--accent)",
-                            letterSpacing: "0.03em",
-                            border: "1px solid var(--border)",
-                        }}
-                    >
-                        {tag}
-                    </span>
-                ))}
-            </div>
-
-            {/* CTA link */}
-            <a
-                href={project.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="project-cta"
-            >
-                View Project
-                <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                >
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-            </a>
-        </motion.div>
-    );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   PROJECT CARD — rises from bottom, rotates, stacks inside folder
-   ═══════════════════════════════════════════════════════════════ */
-function ProjectCard({
-    project,
-    index,
-    progress,
-}: {
-    project: (typeof projects)[number];
-    index: number;
-    progress: MotionValue<number>;
-}) {
-    const [s, e] = seg(index + 1);
-    const mid = s + (e - s) * 0.65;
-
-    const fanRotateZ = index * -1.8;
-    const fanOffsetX = index * -5;
-    const fanOffsetY = index * -3;
-
-    const cardY = useTransform(progress, [s, mid], [350, 0]);
-    const opacity = useTransform(progress, [s, s + SEG * 0.15], [0, 1]);
-    const scale = useTransform(progress, [s, mid], [0.92, 1]);
-
-    const afterSettle = Math.min(e, 1);
-    const rotateZ = useTransform(
-        progress,
-        [s, mid, afterSettle],
-        [0, 0, fanRotateZ]
-    );
-    const x = useTransform(
-        progress,
-        [s, mid, afterSettle],
-        [0, 0, fanOffsetX]
-    );
-    const yOffset = useTransform(
-        progress,
-        [s, mid, afterSettle],
-        [0, 0, fanOffsetY]
-    );
-
-    const finalRotateX = useTransform(
-        progress,
-        [s, mid, afterSettle],
-        [-30, 0, -1]
-    );
-
-    return (
-        <motion.div
-            style={{
-                position: "absolute",
-                top: "5%",
-                left: "5%",
-                width: "90%",
-                height: "90%",
-                rotateX: finalRotateX,
-                rotateZ,
-                opacity,
-                scale,
-                y: cardY,
-                x,
-                translateY: yOffset,
-                zIndex: index + 1,
-                transformOrigin: "center bottom",
-                willChange: "transform, opacity",
-            }}
-        >
-            <div className="project-card-image">
-                <img
-                    src={project.img}
-                    alt={project.title}
-                    loading="lazy"
-                />
-            </div>
-        </motion.div>
-    );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   FOLDER COVER — closes over stacked cards (Seg N+1)
-   ═══════════════════════════════════════════════════════════════ */
-function FolderCoverCard({
-    progress,
-}: {
-    progress: MotionValue<number>;
-}) {
-    const [s, e] = seg(N + 1);
-    const mid = s + (e - s) * 0.6;
-
-    const rotateX = useTransform(progress, [s, mid, e], [-30, -10, 0]);
-    const coverY = useTransform(progress, [s, mid], [300, 0]);
-    const opacity = useTransform(progress, [s, s + SEG * 0.15], [0, 1]);
-
-    return (
-        <motion.div
-            style={{
-                position: "absolute",
-                inset: 0,
-                rotateX,
-                y: coverY,
-                opacity,
-                zIndex: N + 2,
-                transformOrigin: "center bottom",
-                willChange: "transform, opacity",
-            }}
-        >
-            <div className="folder-cover">
-                <span style={{ fontSize: "1.5rem", opacity: 0.3 }}>📁</span>
-                <span
-                    style={{
-                        fontSize: "0.9rem",
-                        fontWeight: 600,
-                        color: "var(--text-tertiary)",
-                        letterSpacing: "0.1em",
-                        textTransform: "uppercase",
-                    }}
-                >
-                    {N} Projects
-                </span>
-            </div>
-        </motion.div>
-    );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   ACTIVE FOLDER TAB — updates per active project
-   ═══════════════════════════════════════════════════════════════ */
-function ActiveFolderTab({
-    progress,
-}: {
-    progress: MotionValue<number>;
-}) {
-    return (
-        <>
-            {projects.map((p, i) => (
-                <ActiveTabItem
-                    key={i}
-                    project={p}
-                    index={i}
-                    progress={progress}
-                />
-            ))}
-        </>
-    );
-}
-
-function ActiveTabItem({
-    project,
-    index,
-    progress,
-}: {
-    project: (typeof projects)[number];
-    index: number;
-    progress: MotionValue<number>;
-}) {
-    const [s] = seg(index + 1);
-    const [, e] = seg(index + 1);
-
-    const opacity = useTransform(
-        progress,
-        [s - SEG * 0.05, s + SEG * 0.1, e - SEG * 0.1, e + SEG * 0.05],
-        [0, 1, 1, 0]
-    );
-    const tabY = useTransform(
-        progress,
-        [s - SEG * 0.05, s + SEG * 0.1],
-        [10, 0]
-    );
-
-    return (
-        <motion.a
-            href={project.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="folder-tab"
-            title={`Open ${project.title}`}
-            style={{
-                position: "absolute",
-                left: 0,
-                bottom: "100%",
-                marginBottom: -1,
-                opacity,
-                y: tabY,
-                pointerEvents: "auto",
-                zIndex: 3,
-            }}
-        >
-            <span style={{ opacity: 0.5, fontSize: "0.65rem" }}>
-                {String(index + 1).padStart(2, "0")}
-            </span>
-            {project.title}
-            <svg
-                width="10"
-                height="10"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                style={{ opacity: 0.4 }}
-            >
-                <path d="M7 17L17 7M17 7H7M17 7v10" />
-            </svg>
-        </motion.a>
-    );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   MAIN PROJECTS SECTION
-   ═══════════════════════════════════════════════════════════════ */
 export default function Projects() {
-    const scrollRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
+    // Map the horizontal scroll to the vertical scroll of a massive container
     const { scrollYProgress } = useScroll({
-        target: scrollRef,
-        offset: ["start start", "end end"],
+        target: containerRef,
+        offset: ["start start", "end end"]
     });
 
-    /* ── Zoom-out phase: Seg N+2 ──────────────────────────────── */
-    const [zoomStart] = seg(N + 2);
-    const folderScale = useTransform(
-        scrollYProgress,
-        [zoomStart, 1],
-        [1, 0.6]
-    );
-    const folderOpacity = useTransform(
-        scrollYProgress,
-        [zoomStart, zoomStart + SEG * 0.7],
-        [1, 0]
-    );
-    const folderX = useTransform(
-        scrollYProgress,
-        [zoomStart, 1],
-        [0, -40]
-    );
-    const folderZoomY = useTransform(
-        scrollYProgress,
-        [zoomStart, 1],
-        [0, -60]
-    );
+    const scrollYProgressSpring = useSpring(scrollYProgress, { stiffness: 400, damping: 90 });
 
-    /* ── Folder bottom visibility ── */
-    const [folderAppearStart] = seg(0);
-    const folderBottomOpacity = useTransform(
-        scrollYProgress,
-        [folderAppearStart, folderAppearStart + SEG * 0.3],
-        [0, 1]
-    );
-    const folderBottomY = useTransform(
-        scrollYProgress,
-        [folderAppearStart, folderAppearStart + SEG],
-        [400, 0]
-    );
-    const folderBottomRotateX = useTransform(
-        scrollYProgress,
-        [folderAppearStart, folderAppearStart + SEG],
-        [-20, 0]
-    );
+    // The magical velocity calculation that drives the 3D bend
+    const scrollVelocity = useVelocity(scrollYProgress);
+    const velocityScale = useTransform(scrollVelocity, [-0.5, 0, 0.5], [-1, 0, 1]);
+    const smoothVelocity = useSpring(velocityScale, { damping: 50, stiffness: 400 });
+
+    // When scrolling fast, cards lean back deeply into the screen
+    const skewX = useTransform(smoothVelocity, [-1, 1], ["-12deg", "12deg"]);
+    const rotateY = useTransform(smoothVelocity, [-1, 1], ["-15deg", "15deg"]);
+    const scale = useTransform(smoothVelocity, [-1, 0, 1], [0.95, 1, 0.95]);
+
+    // Translate the cards horizontally
+    // 4 projects -> 3 stops -> -300vw max shift approx
+    // We adjust exact % to get a nice stop at the end.
+    const x = useTransform(scrollYProgressSpring, [0, 1], ["10%", "-100%"]);
 
     return (
-        <section
-            id="projects"
-            style={{ position: "relative" }}
-        >
-            {/* Scroll-tracked area */}
-            <div
-                ref={scrollRef}
-                style={{
-                    height: `${(TOTAL_SEGS + 1) * 100}vh`,
-                    position: "relative",
-                }}
-            >
-                {/* Sticky viewport */}
-                <div
-                    style={{
-                        position: "sticky",
-                        top: 0,
-                        height: "100vh",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        overflow: "hidden",
-                    }}
-                >
-                    {/* Zoom/fade wrapper */}
-                    <motion.div
-                        style={{
-                            maxWidth: 1280,
-                            margin: "0 auto",
-                            padding: "0 40px",
-                            width: "100%",
-                            scale: folderScale,
-                            opacity: folderOpacity,
-                            x: folderX,
-                            y: folderZoomY,
-                            position: "relative",
-                            zIndex: 1,
-                        }}
+        <section id="projects" className="relative h-[400vh] bg-transparent" ref={containerRef}>
+            <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden">
+                
+                {/* Massive Background Title */}
+                <div className="absolute top-[10%] left-0 w-full overflow-hidden whitespace-nowrap opacity-10 pointer-events-none select-none">
+                    <motion.h2 
+                        className="text-[20vw] font-black italic tracking-tighter text-foreground uppercase"
+                        style={{ x: useTransform(scrollYProgressSpring, [0, 1], ["0%", "-50%"]) }}
                     >
-                        {/* Section header */}
-                        <div style={{ textAlign: "center", marginBottom: 40 }}>
-                            <p
-                                style={{
-                                    fontSize: "0.85rem",
-                                    fontWeight: 600,
-                                    color: "var(--accent)",
-                                    letterSpacing: "0.15em",
-                                    textTransform: "uppercase",
-                                    marginBottom: 8,
-                                }}
-                            >
-                                Featured Work
-                            </p>
-                            <h2
-                                className="gradient-text"
-                                style={{
-                                    fontSize: "clamp(2rem, 5vw, 3.2rem)",
-                                    fontWeight: 800,
-                                    letterSpacing: "-0.02em",
-                                    lineHeight: 1.15,
-                                }}
-                            >
-                                Projects I've built
-                            </h2>
-                        </div>
+                        SELECTED PROJECTS ARCHIVE
+                    </motion.h2>
+                </div>
 
-                        {/* Split layout: 40% text | 60% folder */}
-                        <div className="projects-grid">
-                            {/* Left: crossfading project text */}
-                            <div style={{ position: "relative", minHeight: 380 }}>
-                                {projects.map((p, i) => (
-                                    <ProjectText
-                                        key={i}
-                                        project={p}
-                                        index={i}
-                                        progress={scrollYProgress}
-                                    />
-                                ))}
-                            </div>
-
-                            {/* Right: 3D folder with cards */}
-                            <motion.div
+                <motion.div 
+                    style={{ x }} 
+                    className="relative flex items-center gap-[10vw] px-[15vw] pt-20"
+                >
+                    {projects.map((project, i) => (
+                        <motion.div
+                            key={i}
+                            style={{ 
+                                skewX, 
+                                rotateY, 
+                                scale,
+                                perspective: 1200,
+                                transformStyle: "preserve-3d" 
+                            }}
+                            className="relative flex-shrink-0 w-[80vw] sm:w-[50vw] md:w-[40vw] max-w-[500px] group"
+                        >
+                            <a 
+                                href={project.link} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="block relative aspect-[4/5] rounded-3xl overflow-hidden glass-super hover-glow-super"
                                 style={{
-                                    opacity: folderBottomOpacity,
-                                    y: folderBottomY,
-                                    rotateX: folderBottomRotateX,
-                                    transformOrigin: "center bottom",
-                                    perspective: 1200,
+                                    border: `2px solid ${project.color}`,
+                                    boxShadow: `0 0 30px ${project.color}30`
                                 }}
                             >
-                                <div
-                                    style={{
-                                        position: "relative",
-                                    }}
+                                {/* Solid poppy color block that sweeps out on hover */}
+                                <div 
+                                    className="absolute inset-0 z-10 origin-bottom transition-transform duration-700 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-y-0"
+                                    style={{ background: project.color }}
                                 >
-                                    <ActiveFolderTab progress={scrollYProgress} />
-
-                                    <div
-                                        className="folder-body"
-                                        style={{ perspective: 1200 }}
-                                    >
-                                        {projects.map((p, i) => (
-                                            <ProjectCard
-                                                key={i}
-                                                project={p}
-                                                index={i}
-                                                progress={scrollYProgress}
-                                            />
-                                        ))}
-
-                                        <FolderCoverCard
-                                            progress={scrollYProgress}
-                                        />
+                                    <div className="h-full flex flex-col justify-end p-8 md:p-12">
+                                        <p className="font-extrabold text-[4vw] sm:text-[2vw] text-black tracking-tighter uppercase blur-none leading-[0.9]">
+                                            {project.title}
+                                        </p>
                                     </div>
                                 </div>
-                            </motion.div>
-                        </div>
-                    </motion.div>
+
+                                {/* Actual image revealed underneath */}
+                                <div className="absolute inset-0 z-0 bg-background overflow-hidden">
+                                    <motion.img 
+                                        style={{
+                                            // Counter parallax on the physical image based on scroll
+                                            x: useTransform(scrollYProgressSpring, [0, 1], ["-10%", "10%"]),
+                                            scale: 1.15
+                                        }}
+                                        src={project.img} 
+                                        alt={project.title} 
+                                        className="w-[120%] h-full object-cover object-center group-hover:brightness-110 transition-all duration-700" 
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                                </div>
+
+                                {/* Persistent overlay data */}
+                                <div className="absolute inset-0 z-20 flex flex-col justify-between p-8 md:p-12 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">
+                                    <div className="self-end w-12 h-12 bg-white rounded-full flex items-center justify-center text-black">
+                                        <MoveUpRight size={24} strokeWidth={3} />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-3xl font-black text-white italic tracking-tighter mb-2">
+                                            {project.title}
+                                        </h3>
+                                        <p className="text-white/80 font-medium">
+                                            {project.description}
+                                        </p>
+                                    </div>
+                                </div>
+                            </a>
+                        </motion.div>
+                    ))}
+                </motion.div>
+
+                {/* Fixed Scroll Tracker Line */}
+                <div className="absolute bottom-12 w-[60vw] max-w-lg h-1 bg-border rounded-full overflow-hidden">
+                    <motion.div 
+                        className="h-full rounded-full" 
+                        style={{ 
+                            background: "linear-gradient(90deg, var(--color-1), var(--color-3))",
+                            scaleX: scrollYProgressSpring,
+                            transformOrigin: "left"
+                        }} 
+                    />
                 </div>
             </div>
         </section>

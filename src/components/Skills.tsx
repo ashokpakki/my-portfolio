@@ -1,150 +1,87 @@
-import SectionReveal, { StaggerContainer, StaggerItem } from "./SectionReveal";
+import { motion } from "framer-motion";
+import SectionReveal from "./SectionReveal";
 
+// Hardcoded vibrant hexes for individual pills
 const skillGroups = [
     {
         category: "Languages",
-        skills: [
-            { label: "Java", icon: "java/java-original" },
-            { label: "C++", icon: "cplusplus/cplusplus-original" },
-            { label: "TypeScript", icon: "typescript/typescript-original" },
-            { label: "JavaScript", icon: "javascript/javascript-original" },
-        ],
+        hex: "#ff3366",
+        skills: ["Java", "C++", "TypeScript", "JavaScript"],
     },
     {
-        category: "Frameworks & Libraries",
-        skills: [
-            { label: "React", icon: "react/react-original" },
-            { label: "Node.js", icon: "nodejs/nodejs-original" },
-            { label: "Express", icon: "express/express-original", invert: true },
-            { label: "Spring Boot", icon: "spring/spring-original" },
-            { label: "TailwindCSS", icon: "tailwindcss/tailwindcss-original" },
-        ],
+        category: "Frameworks & Libs",
+        hex: "#ff9933",
+        skills: ["React", "Next.js", "Node.js", "Express", "Spring Boot", "TailwindCSS"],
     },
     {
         category: "Databases",
-        skills: [
-            { label: "MySQL", icon: "mysql/mysql-original" },
-            { label: "MongoDB", icon: "mongodb/mongodb-original" },
-            { label: "PostgreSQL", icon: "postgresql/postgresql-original" },
-        ],
+        hex: "#00ccff",
+        skills: ["MySQL", "MongoDB", "PostgreSQL"],
     },
     {
-        category: "Tools & Platforms",
-        skills: [
-            { label: "Git", icon: "git/git-original" },
-            { label: "Postman", icon: "postman/postman-original" },
-            { label: "VS Code", icon: "vscode/vscode-original" },
-            { label: "Linux", icon: "linux/linux-original" },
-        ],
+        category: "Platforms & Tools",
+        hex: "#7b2cbf",
+        skills: ["Git", "Docker", "AWS", "Postman", "Linux"],
     },
 ];
 
 export default function Skills() {
     return (
-        <section id="skills" className="section-padding" style={{ position: "relative" }}>
-            <div className="section-container">
-                {/* Section Header */}
-                <SectionReveal>
-                    <div style={{ textAlign: "center", marginBottom: 64 }}>
-                        <p
-                            style={{
-                                fontSize: "0.85rem",
-                                fontWeight: 600,
-                                color: "var(--accent)",
-                                letterSpacing: "0.15em",
-                                textTransform: "uppercase",
-                                marginBottom: 12,
-                            }}
-                        >
-                            Tech Stack
+        <section id="skills" className="relative section-padding bg-background w-full overflow-hidden">
+            <div className="container-main mx-auto">
+                <SectionReveal delay={0}>
+                    <div className="flex flex-col items-center md:items-start text-center md:text-left mb-24">
+                        <p className="text-[var(--color-1)] font-bold tracking-[0.2em] uppercase text-sm mb-4">
+                            The Arsenal
                         </p>
-                        <h2
-                            className="gradient-text"
-                            style={{
-                                fontSize: "clamp(2rem, 5vw, 3.2rem)",
-                                fontWeight: 800,
-                                letterSpacing: "-0.02em",
-                                lineHeight: 1.15,
-                                marginBottom: 20,
-                            }}
-                        >
-                            Technologies I work with
+                        <h2 className="text-[clamp(3.5rem,8vw,6rem)] font-black leading-none tracking-[-0.03em] uppercase mb-8">
+                            Built with <br />
+                            <span className="text-gradient-animated">Power</span>
                         </h2>
-                        <p
-                            style={{
-                                fontSize: "1.05rem",
-                                lineHeight: 1.8,
-                                color: "var(--text-secondary)",
-                                maxWidth: 650,
-                                margin: "0 auto",
-                            }}
-                        >
-                            From architecting robust backend systems in Java and Spring Boot to
-                            building reactive frontends with React and TypeScript — I choose the
-                            right tool for each problem.
-                        </p>
                     </div>
                 </SectionReveal>
 
-                {/* Skill Groups */}
-                <div
-                    style={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
-                        gap: 48,
-                    }}
-                >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-20">
                     {skillGroups.map((group, gi) => (
                         <SectionReveal key={gi} delay={gi * 0.1}>
-                            <h3
-                                style={{
-                                    fontSize: "0.95rem",
-                                    fontWeight: 600,
-                                    color: "var(--text-primary)",
-                                    marginBottom: 20,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 10,
-                                }}
-                            >
-                                <span
-                                    style={{
-                                        display: "inline-block",
-                                        width: 18,
-                                        height: 2,
-                                        background: "var(--accent)",
-                                        borderRadius: 1,
-                                    }}
-                                />
-                                {group.category}
-                            </h3>
-                            <StaggerContainer
-                                staggerDelay={0.06}
-                                className=""
-                            >
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        flexWrap: "wrap",
-                                        gap: 10,
-                                    }}
+                            <div className="flex flex-col gap-6">
+                                <h3 
+                                    className="text-2xl font-black uppercase tracking-tight flex items-center gap-4"
+                                    style={{ color: group.hex }}
                                 >
-                                    {group.skills.map((s, si) => (
-                                        <StaggerItem key={si}>
-                                            <div className="skill-pill">
-                                                <img
-                                                    src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${s.icon}.svg`}
-                                                    alt={s.label}
-                                                    style={{
-                                                        filter: s.invert ? "var(--icon-invert, none)" : "none",
-                                                    }}
-                                                />
-                                                {s.label}
-                                            </div>
-                                        </StaggerItem>
+                                    <span className="w-12 h-1 block rounded-full" style={{ background: group.hex }} />
+                                    {group.category}
+                                </h3>
+                                
+                                <div className="flex flex-wrap gap-3">
+                                    {group.skills.map((skill, si) => (
+                                        <motion.div
+                                            key={si}
+                                            whileHover={{ scale: 1.05, y: -4 }}
+                                            className="relative px-6 py-3 rounded-[2rem] font-bold text-sm tracking-wide uppercase transition-colors duration-300"
+                                            style={{
+                                                backgroundColor: `${group.hex}15`,
+                                                color: group.hex,
+                                                border: `2px solid ${group.hex}40`
+                                            }}
+                                            onHoverStart={(e) => {
+                                                const el = e.target as HTMLElement;
+                                                el.style.backgroundColor = group.hex;
+                                                el.style.color = "#000";
+                                                el.style.boxShadow = `0 0 20px ${group.hex}80`;
+                                            }}
+                                            onHoverEnd={(e) => {
+                                                const el = e.target as HTMLElement;
+                                                el.style.backgroundColor = `${group.hex}15`;
+                                                el.style.color = group.hex;
+                                                el.style.boxShadow = "none";
+                                            }}
+                                        >
+                                            {skill}
+                                        </motion.div>
                                     ))}
                                 </div>
-                            </StaggerContainer>
+                            </div>
                         </SectionReveal>
                     ))}
                 </div>
