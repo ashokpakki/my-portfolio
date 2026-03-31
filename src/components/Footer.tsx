@@ -2,61 +2,35 @@ import { SiGithub, SiLinkedin } from "react-icons/si";
 
 export default function Footer() {
     return (
-        <footer
-            style={{
-                padding: "40px 24px",
-                textAlign: "center",
-            }}
-        >
-            {/* Animated gradient top border */}
-            <div className="footer-border" />
+        <footer className="border-t border-[var(--border-muted)] bg-[var(--background)] py-12 px-6">
+            <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+                
+                <div className="flex items-center gap-2 text-xl font-bold tracking-tight text-[var(--heading)]">
+                    AP<span className="text-[var(--accent)]">.</span>
+                </div>
 
-            <div
-                style={{
-                    maxWidth: 1200,
-                    margin: "0 auto",
-                    paddingTop: 40,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: 16,
-                }}
-            >
-                {/* Social row */}
-                <div style={{ display: "flex", gap: 16 }}>
+                <p className="text-sm text-[var(--foreground)] font-medium text-center md:text-left">
+                    Designed & built by Ashok Pakki &copy; {new Date().getFullYear()}
+                </p>
+
+                <div className="flex gap-4">
                     <a
                         href="https://github.com/ashokpakki"
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label="GitHub"
-                        style={{ color: "var(--text-tertiary)", transition: "color 0.3s ease" }}
-                        onMouseEnter={(e) => (e.currentTarget.style.color = "var(--accent)")}
-                        onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-tertiary)")}
+                        className="text-[var(--foreground)] hover:text-[var(--heading)] transition-colors p-2 rounded-full hover:bg-[var(--border-muted)]"
                     >
-                        <SiGithub size={18} />
+                        <SiGithub size={20} />
                     </a>
                     <a
                         href="https://www.linkedin.com/in/pakkiashok/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label="LinkedIn"
-                        style={{ color: "var(--text-tertiary)", transition: "color 0.3s ease" }}
-                        onMouseEnter={(e) => (e.currentTarget.style.color = "var(--accent)")}
-                        onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-tertiary)")}
+                        className="text-[var(--foreground)] hover:text-[var(--heading)] transition-colors p-2 rounded-full hover:bg-[var(--border-muted)]"
                     >
-                        <SiLinkedin size={18} />
+                        <SiLinkedin size={20} />
                     </a>
                 </div>
-
-                <p
-                    style={{
-                        fontSize: "0.8rem",
-                        color: "var(--text-tertiary)",
-                        fontWeight: 400,
-                    }}
-                >
-                    Designed & built by Ashok Pakki &middot; {new Date().getFullYear()}
-                </p>
             </div>
         </footer>
     );

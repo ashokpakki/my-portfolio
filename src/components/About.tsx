@@ -1,135 +1,101 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform, MotionValue, useSpring } from "framer-motion";
+import { motion } from "framer-motion";
+import { Briefcase, GraduationCap, Code2, Database } from "lucide-react";
 
-const slices = [
-    {
-        title: "PRECISION",
-        text: "Every pixel calculated.",
-        subtext: "I build software that makes an impact. It's not just code; it's a visceral experience.",
-        color: "text-[var(--color-1)]"
-    },
+const experienceItems = [
     {
         title: "UDAAN",
-        text: "Warehouse optimization.",
-        subtext: "Re-engineered data operations and massively scaled queries in agile sprints.",
-        color: "text-[var(--color-2)]"
+        role: "Warehouse Optimization Engineer",
+        description: "Re-engineered data operations and massively scaled queries in agile sprints. Focused on optimizing warehouse logistics through highly performant dashboards and automated workflows.",
+        icon: <Briefcase size={20} />,
+        date: "Experience"
     },
     {
         title: "NIT ALD",
-        text: "B.Tech Computer Science",
-        subtext: "Deep diving into algorithms, highly scalable architectures, and intense hackathons.",
-        color: "text-[var(--color-3)]"
-    },
-    {
-        title: "ARSENAL",
-        text: "TypeScript • React • Node.js",
-        subtext: "Framer Motion • PostgreSQL • Go • Docker • AWS",
-        color: "text-[var(--color-4)]"
+        role: "B.Tech Computer Science",
+        description: "Deep diving into algorithms, highly scalable architectures, and intense hackathons. Built a strong foundational understanding of computer science principles and software engineering.",
+        icon: <GraduationCap size={20} />,
+        date: "Education"
     }
 ];
 
-function SpatialSlice({
-    slice,
-    index,
-    progress,
-    total
-}: {
-    slice: typeof slices[0];
-    index: number;
-    progress: MotionValue<number>;
-    total: number;
-}) {
-    // Math for a spatial scroll:
-    // When progress hits (index / total), this card should be perfectly at scale 1, opacity 1, blur 0.
-    // When progress is earlier, card is scaled down (far away), blurred.
-    // When progress is later, card scales up radically (zooms past camera), fades out rapidly.
-
-    const targetPos = index / total;
-    const window = 1 / total; // How much scroll scroll this takes
-    const startPos = targetPos - window;
-    const endPos = targetPos + window * 0.8;
-
-    const scale = useTransform(
-        progress,
-        [Math.max(0, startPos), targetPos, endPos],
-        [0.2, 1, 6] // Zooms in from tiny, rests, then explodes past screen
-    );
-
-    const opacity = useTransform(
-        progress,
-        [Math.max(0, startPos), startPos + window * 0.5, targetPos, endPos - window * 0.3, endPos],
-        [0, 1, 1, 0, 0]
-    );
-
-    const blur = useTransform(
-        progress,
-        [Math.max(0, startPos), targetPos, endPos],
-        ["blur(20px)", "blur(0px)", "blur(30px)"]
-    );
-
-    return (
-        <motion.div
-            style={{
-                scale,
-                opacity,
-                filter: blur,
-                zIndex: total - index
-            }}
-            className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pointer-events-none"
-        >
-            <h2 className={`text-[clamp(4rem,12vw,10rem)] font-black tracking-tighter leading-none mb-4 drop-shadow-2xl ${slice.color}`}>
-                {slice.title}
-            </h2>
-            <p className="text-3xl md:text-5xl font-black text-foreground mb-6 uppercase tracking-widest drop-shadow-lg max-w-4xl">
-                {slice.text}
-            </p>
-            <p className="text-xl md:text-2xl text-foreground/80 font-medium max-w-2xl mx-auto drop-shadow-md">
-                {slice.subtext}
-            </p>
-        </motion.div>
-    );
-}
-
 export default function About() {
-    const containerRef = useRef<HTMLDivElement>(null);
-    
-    // Smooth the scroll heavily so the spatial zoom feels incredibly cinematic, like flying
-    const rawProgress = useScroll({
-        target: containerRef,
-        offset: ["start start", "end end"]
-    }).scrollYProgress;
-    
-    const scrollYProgress = useSpring(rawProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
-
     return (
-        <section id="about" className="relative bg-transparent h-auto">
-            {/* Massive scrolling container: 500vh to give a ton of scrolling runway */}
-            <div ref={containerRef} className="relative w-full" style={{ height: "500vh" }}>
-                
-                {/* The "Camera Lens" sticky view */}
-                <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
-                    
-                    {/* Dark gradient overlay at edges to vignette the tunnel */}
-                    <div className="absolute inset-0 pointer-events-none z-50 bg-[radial-gradient(ellipse_at_center,transparent_40%,var(--background)_100%)] opacity-80" />
-
-                    {slices.map((slice, i) => (
-                        <SpatialSlice 
-                            key={i} 
-                            slice={slice} 
-                            index={i} 
-                            progress={scrollYProgress} 
-                            total={slices.length} 
-                        />
-                    ))}
-                    
-                    {/* Fixed progress text */}
-                    <div className="absolute top-10 right-10 z-50 mix-blend-difference">
-                        <motion.div className="text-foreground text-4xl font-black">
-                            <motion.span>{useTransform(scrollYProgress, v => Math.floor(v * 100))}</motion.span>%
-                        </motion.div>
-                        <div className="text-[var(--color-1)] text-xs tracking-[0.3em] font-bold mt-1 text-right uppercase">Depth</div>
-                    </div>
+        <section id="about" className="section-padding bg-[var(--background)]">
+            <div className="container-main px-6 mx-auto">
+                <div className="max-w-3xl mb-16">
+                    <p className="text-[var(--accent)] font-bold tracking-wider uppercase text-sm mb-3">
+                        Background
+                    </p>
+                    <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[var(--heading)] mb-6">
+                        Engineering with precision.
+                    </h2>
+                    <p className="text-xl text-[var(--foreground)] leading-relaxed font-medium">
+                        I build software that makes an impact. Focusing on robust architectural patterns, automated scaling, and delivering seamless user experiences from the database layer up to the browser.
+                    </p>
                 </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Experience Cards */}
+                    {experienceItems.map((item, i) => (
+                        <motion.div 
+                            key={i}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, margin: "-50px" }}
+                            transition={{ duration: 0.5, delay: i * 0.1 }}
+                            className="stripe-card p-8 flex flex-col h-full"
+                        >
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="w-12 h-12 rounded-xl bg-[var(--accent-light)] text-[var(--accent)] flex items-center justify-center">
+                                    {item.icon}
+                                </div>
+                                <span className="text-sm font-semibold text-[var(--foreground)] bg-[var(--border-muted)] px-3 py-1 rounded-full">
+                                    {item.date}
+                                </span>
+                            </div>
+                            <h3 className="text-2xl font-bold text-[var(--heading)] mb-2">
+                                {item.title}
+                            </h3>
+                            <div className="text-[var(--accent)] font-medium mb-4">
+                                {item.role}
+                            </div>
+                            <p className="text-[var(--foreground)] leading-relaxed mt-auto">
+                                {item.description}
+                            </p>
+                        </motion.div>
+                    ))}
+                </div>
+                
+                {/* Secondary subtle info block */}
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="mt-8 stripe-card-lg p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 bg-gradient-to-br from-[var(--card)] to-[var(--border-muted)]"
+                >
+                    <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2 text-[var(--heading)] font-bold mb-1">
+                            <Code2 size={18} className="text-[var(--accent)]"/> Philosophy
+                        </div>
+                        <span className="text-[var(--foreground)] text-sm leading-relaxed">
+                            Clean code. Strongly typed interfaces. Comprehensive testing. I treat infrastructure as code and deployments as mundane, repeatable events.
+                        </span>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2 text-[var(--heading)] font-bold mb-1">
+                            <Database size={18} className="text-[var(--accent)]"/> Scale
+                        </div>
+                        <span className="text-[var(--foreground)] text-sm leading-relaxed">
+                            Comfortable with designing schema, writing complex SQL, setting up replication, and managing distributed data stores across AWS.
+                        </span>
+                    </div>
+                    <div className="flex flex-col gap-2 justify-center">
+                         <div className="text-3xl font-bold text-[var(--heading)]">100%</div>
+                         <div className="text-sm text-[var(--foreground)] font-medium">Dedication to every pixel calculated and every query optimized.</div>
+                    </div>
+                </motion.div>
+
             </div>
         </section>
     );

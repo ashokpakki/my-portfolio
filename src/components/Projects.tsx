@@ -1,165 +1,209 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform, useVelocity, useSpring } from "framer-motion";
-import { MoveUpRight } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { MoveUpRight, Folder, LayoutGrid, Server, Gamepad2, FileText } from "lucide-react";
 
+// Categorized projects
 const projects = [
     {
-        title: "WRITER AI",
-        description: "Grok API powered generative AI content creation platform.",
+        id: "writer-ai",
+        title: "Writer AI",
+        description: "Grok API powered generative AI content creation platform. High-quality essays and code.",
         img: "/images/writerai.png",
         link: "https://writer-ai-six.vercel.app/login",
-        color: "var(--color-1)",
-        hex: "#ff3366" // Fallback reference
+        tags: ["React", "Node.js", "AI"],
+        category: "Full Stack"
     },
     {
-        title: "BLOG SYSTEM",
-        description: "Scaleable minimal blogging platform with rich text.",
+        id: "blog-system",
+        title: "Blog System",
+        description: "Scaleable minimal blogging platform with rich text formatting and a highly optimized DB.",
         img: "/images/blogapp.png",
         link: "https://github.com/ashokpakki/Blog-app-main",
-        color: "var(--color-2)",
-        hex: "#ff9933"
+        tags: ["TypeScript", "Next.js", "PostgreSQL"],
+        category: "Full Stack"
     },
     {
-        title: "BLACKJACK",
-        description: "Classic dealer AI and casino game logic in Java.",
+        id: "blackjack",
+        title: "Blackjack",
+        description: "Classic dealer AI and casino game logic in Java. Features full probability tracking.",
         img: "/images/blackjack.png",
         link: "https://github.com/ashokpakki/Blackjack",
-        color: "var(--color-3)",
-        hex: "#00ccff"
+        tags: ["Java", "OOP", "Algorithms"],
+        category: "Software"
     },
     {
-        title: "QUOTES",
-        description: "A beautifully animated daily inspiration tool.",
+        id: "quotes",
+        title: "Quotes",
+        description: "A beautifully animated daily inspiration tool serving cached random quotes via edge.",
         img: "/images/ran.png",
         link: "https://github.com/ashokpakki/ran",
-        color: "var(--color-4)",
-        hex: "#7b2cbf"
+        tags: ["Framer Motion", "Redis"],
+        category: "Frontend"
     },
 ];
 
+const categories = [
+    { name: "All Projects", icon: <LayoutGrid size={16} /> },
+    { name: "Full Stack", icon: <Server size={16} /> },
+    { name: "Frontend", icon: <Folder size={16} /> },
+    { name: "Software", icon: <Gamepad2 size={16} /> },
+];
+
 export default function Projects() {
-    const containerRef = useRef<HTMLDivElement>(null);
+    const [activeFilter, setActiveFilter] = useState("All Projects");
 
-    // Map the horizontal scroll to the vertical scroll of a massive container
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ["start start", "end end"]
-    });
-
-    const scrollYProgressSpring = useSpring(scrollYProgress, { stiffness: 400, damping: 90 });
-
-    // The magical velocity calculation that drives the 3D bend
-    const scrollVelocity = useVelocity(scrollYProgress);
-    const velocityScale = useTransform(scrollVelocity, [-0.5, 0, 0.5], [-1, 0, 1]);
-    const smoothVelocity = useSpring(velocityScale, { damping: 50, stiffness: 400 });
-
-    // When scrolling fast, cards lean back deeply into the screen
-    const skewX = useTransform(smoothVelocity, [-1, 1], ["-12deg", "12deg"]);
-    const rotateY = useTransform(smoothVelocity, [-1, 1], ["-15deg", "15deg"]);
-    const scale = useTransform(smoothVelocity, [-1, 0, 1], [0.95, 1, 0.95]);
-
-    // Translate the cards horizontally
-    // 4 projects -> 3 stops -> -300vw max shift approx
-    // We adjust exact % to get a nice stop at the end.
-    const x = useTransform(scrollYProgressSpring, [0, 1], ["10%", "-100%"]);
+    const filteredProjects = projects.filter(p => 
+        activeFilter === "All Projects" || p.category === activeFilter
+    );
 
     return (
-        <section id="projects" className="relative h-[400vh] bg-transparent" ref={containerRef}>
-            <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden">
+        <section id="projects" className="section-padding relative">
+            {/* Soft gradient background for this section just to give the window a nice surface to blur */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--accent-light)] to-transparent opacity-30 pointer-events-none" />
+
+            <div className="container-main px-6 mx-auto relative z-10">
                 
-                {/* Massive Background Title */}
-                <div className="absolute top-[10%] left-0 w-full overflow-hidden whitespace-nowrap opacity-10 pointer-events-none select-none">
-                    <motion.h2 
-                        className="text-[20vw] font-black italic tracking-tighter text-foreground uppercase"
-                        style={{ x: useTransform(scrollYProgressSpring, [0, 1], ["0%", "-50%"]) }}
-                    >
-                        SELECTED PROJECTS ARCHIVE
-                    </motion.h2>
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+                    <div className="max-w-2xl">
+                        <p className="text-[var(--accent)] font-bold tracking-wider uppercase text-sm mb-3">
+                            Portfolio
+                        </p>
+                        <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[var(--heading)] mb-6">
+                            Selected Projects
+                        </h2>
+                        <p className="text-xl text-[var(--foreground)] font-medium">
+                            A showcase of recent engineering work, ranging from full-stack SaaS applications to core algorithmic logic.
+                        </p>
+                    </div>
                 </div>
 
+                {/* --- Mac Finder Window UI --- */}
                 <motion.div 
-                    style={{ x }} 
-                    className="relative flex items-center gap-[10vw] px-[15vw] pt-20"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="mac-window w-full flex flex-col"
                 >
-                    {projects.map((project, i) => (
-                        <motion.div
-                            key={i}
-                            style={{ 
-                                skewX, 
-                                rotateY, 
-                                scale,
-                                perspective: 1200,
-                                transformStyle: "preserve-3d" 
-                            }}
-                            className="relative flex-shrink-0 w-[80vw] sm:w-[50vw] md:w-[40vw] max-w-[500px] group"
-                        >
-                            <a 
-                                href={project.link} 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className="block relative aspect-[4/5] rounded-3xl overflow-hidden glass-super hover-glow-super"
-                                style={{
-                                    border: `2px solid ${project.color}`,
-                                    boxShadow: `0 0 30px ${project.color}30`
-                                }}
-                            >
-                                {/* Solid poppy color block that sweeps out on hover */}
-                                <div 
-                                    className="absolute inset-0 z-10 origin-bottom transition-transform duration-700 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-y-0"
-                                    style={{ background: project.color }}
+                    {/* Title Bar */}
+                    <div className="h-12 bg-[var(--glass-sidebar)] border-b border-[var(--border-muted)] flex items-center px-4 relative">
+                        {/* Traffic Lights */}
+                        <div className="flex gap-2 z-10">
+                            <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]" />
+                            <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]" />
+                            <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]" />
+                        </div>
+                        {/* Title */}
+                        <div className="absolute inset-0 flex items-center justify-center text-sm font-semibold text-[var(--foreground)] tracking-wide pointer-events-none">
+                            Developer — Finder
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row min-h-[500px] h-auto md:max-h-[700px]">
+                        {/* Sidebar */}
+                        <div className="mac-sidebar w-full md:w-64 p-4 flex flex-col gap-1 shrink-0">
+                            <div className="text-xs font-bold text-[var(--foreground)] uppercase tracking-wider mb-2 ml-2 mt-2">
+                                Favorites
+                            </div>
+                            
+                            {categories.map((cat) => (
+                                <button
+                                    key={cat.name}
+                                    onClick={() => setActiveFilter(cat.name)}
+                                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors outline-none text-left ${
+                                        activeFilter === cat.name 
+                                            ? "bg-[var(--accent)] text-white shadow-sm" 
+                                            : "text-[var(--foreground)] hover:bg-[var(--border-muted)] hover:text-[var(--heading)]"
+                                    }`}
                                 >
-                                    <div className="h-full flex flex-col justify-end p-8 md:p-12">
-                                        <p className="font-extrabold text-[4vw] sm:text-[2vw] text-black tracking-tighter uppercase blur-none leading-[0.9]">
-                                            {project.title}
-                                        </p>
-                                    </div>
-                                </div>
+                                    <span className={`${activeFilter === cat.name ? "text-white" : "text-[var(--accent)]"}`}>
+                                        {cat.icon}
+                                    </span>
+                                    {cat.name}
+                                </button>
+                            ))}
 
-                                {/* Actual image revealed underneath */}
-                                <div className="absolute inset-0 z-0 bg-background overflow-hidden">
-                                    <motion.img 
-                                        style={{
-                                            // Counter parallax on the physical image based on scroll
-                                            x: useTransform(scrollYProgressSpring, [0, 1], ["-10%", "10%"]),
-                                            scale: 1.15
-                                        }}
-                                        src={project.img} 
-                                        alt={project.title} 
-                                        className="w-[120%] h-full object-cover object-center group-hover:brightness-110 transition-all duration-700" 
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-                                </div>
-
-                                {/* Persistent overlay data */}
-                                <div className="absolute inset-0 z-20 flex flex-col justify-between p-8 md:p-12 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">
-                                    <div className="self-end w-12 h-12 bg-white rounded-full flex items-center justify-center text-black">
-                                        <MoveUpRight size={24} strokeWidth={3} />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-3xl font-black text-white italic tracking-tighter mb-2">
-                                            {project.title}
-                                        </h3>
-                                        <p className="text-white/80 font-medium">
-                                            {project.description}
-                                        </p>
-                                    </div>
-                                </div>
+                            <div className="mt-8 mb-2 ml-2 text-xs font-bold text-[var(--foreground)] uppercase tracking-wider">
+                                External
+                            </div>
+                            <a 
+                                href="https://github.com/ashokpakki"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors outline-none text-left text-[var(--foreground)] hover:bg-[var(--border-muted)] hover:text-[var(--heading)] group"
+                            >
+                                <span className="text-[var(--foreground)] group-hover:text-[var(--heading)] transition-colors">
+                                    <MoveUpRight size={16} />
+                                </span>
+                                Github Archive
                             </a>
-                        </motion.div>
-                    ))}
+                        </div>
+
+                        {/* Main Content Area (Files) */}
+                        <div className="flex-1 p-6 md:p-8 overflow-y-auto bg-[var(--background)]/30">
+                            <motion.div 
+                                layout 
+                                className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-6"
+                            >
+                                <AnimatePresence mode="popLayout">
+                                    {filteredProjects.map((project) => (
+                                        <motion.div
+                                            key={project.id}
+                                            layout
+                                            initial={{ opacity: 0, scale: 0.9 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.9 }}
+                                            transition={{ duration: 0.25, type: "spring", bounce: 0 }}
+                                            className="group flex flex-col bg-[var(--card)] rounded-xl border border-[var(--border-muted)] overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                                        >
+                                            {/* File Preview Thumbnail */}
+                                            <a
+                                                href={project.link}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="block relative aspect-[16/10] overflow-hidden bg-[var(--border-muted)]"
+                                            >
+                                                <img
+                                                    src={project.img}
+                                                    alt={project.title}
+                                                    className="w-full h-full object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-105"
+                                                />
+                                                <div className="absolute inset-0 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.05)] pointer-events-none" />
+                                            </a>
+
+                                            {/* File Metadata */}
+                                            <div className="p-5 flex flex-col flex-1">
+                                                <div className="flex items-center gap-2 mb-3 flex-wrap">
+                                                    <span className="flex items-center gap-1 text-[10px] uppercase tracking-wider font-bold text-[var(--foreground)] bg-[var(--border-muted)] px-2 py-0.5 rounded">
+                                                        <FileText size={10} />
+                                                        {project.category}
+                                                    </span>
+                                                </div>
+                                                
+                                                <h3 className="text-lg font-bold text-[var(--heading)] mb-1 flex items-center justify-between group-hover:text-[var(--accent)] transition-colors">
+                                                    {project.title}
+                                                </h3>
+                                                
+                                                <p className="text-[var(--foreground)] text-sm leading-relaxed mb-4">
+                                                    {project.description}
+                                                </p>
+
+                                                <div className="mt-auto flex gap-2 flex-wrap">
+                                                    {project.tags.map(tag => (
+                                                        <span key={tag} className="text-xs font-semibold text-[var(--accent)] bg-[var(--accent-light)] px-2 py-1 rounded-md">
+                                                            {tag}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </AnimatePresence>
+                            </motion.div>
+                        </div>
+                    </div>
                 </motion.div>
 
-                {/* Fixed Scroll Tracker Line */}
-                <div className="absolute bottom-12 w-[60vw] max-w-lg h-1 bg-border rounded-full overflow-hidden">
-                    <motion.div 
-                        className="h-full rounded-full" 
-                        style={{ 
-                            background: "linear-gradient(90deg, var(--color-1), var(--color-3))",
-                            scaleX: scrollYProgressSpring,
-                            transformOrigin: "left"
-                        }} 
-                    />
-                </div>
             </div>
         </section>
     );

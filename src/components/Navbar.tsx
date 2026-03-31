@@ -17,7 +17,7 @@ export default function Navbar() {
 
     const headerY = useTransform(scrollY, [0, 50], [0, -10]);
     const headerScale = useTransform(scrollY, [0, 50], [1, 0.98]);
-    const bgOpacity = useTransform(scrollY, [0, 50], [0.5, 0.85]);
+    const bgOpacity = useTransform(scrollY, [0, 50], [0.8, 0.95]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -51,32 +51,35 @@ export default function Navbar() {
             style={{ y: headerY, scale: headerScale }}
             className="fixed top-6 left-0 right-0 z-[100] flex justify-center px-4 pointer-events-none"
         >
+            {/* The glassy floating shell */}
             <motion.div
                 style={{ opacity: bgOpacity }}
-                className="absolute inset-x-4 max-w-5xl mx-auto h-full rounded-full bg-background/60 backdrop-blur-xl border border-border shadow-lg pointer-events-auto"
+                className="absolute inset-x-4 max-w-5xl mx-auto h-full rounded-2xl bg-[var(--card)]/90 backdrop-blur-md border border-[var(--border)] shadow-[var(--shadow-sm)] pointer-events-auto"
             />
 
             <div className="relative w-full max-w-5xl px-6 py-3 flex items-center justify-between pointer-events-auto">
+                {/* Logo */}
                 <button
                     onClick={() => scrollTo("hero")}
-                    className="text-xl font-black tracking-tighter text-foreground hover:opacity-70 transition-opacity"
+                    className="text-xl font-bold tracking-tight text-[var(--heading)] hover:text-[var(--accent)] transition-colors"
                 >
-                    AP<span className="text-primary">.</span>
+                    AP<span className="text-[var(--accent)]">.</span>
                 </button>
 
-                <div className="hidden md:flex items-center gap-1 bg-muted/50 p-1 rounded-full border border-border/50">
+                {/* Desktop Menu */}
+                <div className="hidden md:flex items-center gap-1 bg-[var(--background)] p-1 rounded-xl border border-[var(--border-muted)]">
                     {navLinks.map(({ label, href }) => (
                         <button
                             key={href}
                             onClick={() => scrollTo(href)}
-                            className={`relative px-5 py-2 rounded-full text-sm font-semibold transition-colors outline-none z-10 ${
-                                active === href ? "text-background" : "text-muted-foreground hover:text-foreground"
+                            className={`relative px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors outline-none z-10 ${
+                                active === href ? "text-white" : "text-[var(--foreground)] hover:text-[var(--heading)]"
                             }`}
                         >
                             {active === href && (
                                 <motion.div
                                     layoutId="nav-pill"
-                                    className="absolute inset-0 bg-foreground rounded-full -z-10"
+                                    className="absolute inset-0 bg-[var(--heading)] rounded-lg -z-10 shadow-[0_2px_4px_rgba(0,0,0,0.1)]"
                                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                                 />
                             )}
@@ -91,10 +94,10 @@ export default function Navbar() {
                         href="https://flowcv.com/resume/c75adcr9ji"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="hidden sm:flex items-center gap-2 bg-foreground text-background px-5 py-2.5 rounded-full text-sm font-semibold hover:scale-105 active:scale-95 transition-transform"
+                        className="hidden sm:flex items-center gap-2 btn-primary !py-2 !px-4 !text-sm"
                     >
                         Resume
-                        <MoveUpRight size={16} strokeWidth={2.5} />
+                        <MoveUpRight size={14} strokeWidth={2.5} />
                     </a>
                 </div>
             </div>

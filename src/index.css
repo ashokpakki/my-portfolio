@@ -1,37 +1,57 @@
 @import "tailwindcss";
 
 :root {
-  --background: oklch(0.99 0.01 75); /* Very warm bright off-white */
-  --foreground: oklch(0.1 0.05 250); 
+  /* Stripe-like Light Mode Palette */
+  --background: #f6f9fc;
+  --foreground: #425466; /* Slate for body text */
+  --heading: #0a2540;   /* Deep slate for headings */
   
-  /* Poppy Solid Accents for Light Mode */
-  --color-1: #ff3366; /* Hot Pink */
-  --color-2: #ff9933; /* Vibrant Orange */
-  --color-3: #00ccff; /* Cyan */
-  --color-4: #7b2cbf; /* Deep Purple */
+  --card: #ffffff;
+  --card-hover: #ffffff;
+  --border: rgba(10, 37, 64, 0.1);
+  --border-muted: rgba(10, 37, 64, 0.05);
 
-  --card: rgba(255, 255, 255, 0.4);
-  --border: rgba(0, 0, 0, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.5);
+  --accent: #635bff;    /* Blurple */
+  --accent-hover: #5247e5;
+  --accent-light: rgba(99, 91, 255, 0.08);
 
-  --nav-bg: rgba(255, 255, 255, 0.5);
+  --secondary: #00d4ff; /* Cyan accent */
+  --tertiary: #ff6b6b;  /* Soft Pinkish Red */
+  
+  --shadow-sm: 0 2px 4px rgba(50, 50, 93, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 13px 27px -5px rgba(50, 50, 93, 0.25), 0 8px 16px -8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 30px 60px -12px rgba(50, 50, 93, 0.25), 0 18px 36px -18px rgba(0, 0, 0, 0.3);
+
+  /* Glassmorphism for Mac Window */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-sidebar: rgba(246, 249, 252, 0.5);
 }
 
 [data-theme="dark"] {
-  --background: oklch(0.12 0.02 280); /* Deep cool very dark blue/black */
-  --foreground: oklch(0.98 0 0);
+  /* Rich, Vibrant Dark Mode Palette */
+  --background: #0b1120; /* Deep, rich twilight blue */
+  --foreground: #94a3b8; /* Crisp slate for readable text */
+  --heading: #f1f5f9;    /* Pure, glowing white for headings */
   
-  /* Poppy Solid Accents for Dark Mode */
-  --color-1: #ff007f; /* Cyber Pink */
-  --color-2: #7000ff; /* Electric Indigo */
-  --color-3: #00f0ff; /* Neon Blue */
-  --color-4: #ffea00; /* Acid Yellow */
+  --card: #141c2f;       /* Rich inner card blue */
+  --card-hover: #1e293b;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-muted: rgba(255, 255, 255, 0.03);
 
-  --card: rgba(15, 10, 30, 0.4);
-  --border: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.15);
+  --accent: #818cf8;    /* Lighter, glowing indigo/blurple for dark mode */
+  --accent-hover: #a5b4fc;
+  --accent-light: rgba(129, 140, 248, 0.15);
 
-  --nav-bg: rgba(10, 5, 20, 0.5);
+  --secondary: #22d3ee;
+  --tertiary: #f472b6;  /* Pink */
+
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 13px 27px -5px rgba(0, 0, 0, 0.7), 0 8px 16px -8px rgba(0, 0, 0, 0.8);
+  --shadow-lg: 0 30px 60px -12px rgba(0, 0, 0, 0.8), 0 18px 36px -18px rgba(0, 0, 0, 0.9);
+
+  /* Glassmorphism for Mac Window */
+  --glass-bg: rgba(20, 28, 47, 0.6);
+  --glass-sidebar: rgba(11, 17, 32, 0.4);
 }
 
 @layer base {
@@ -41,82 +61,136 @@
     font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     overflow-x: clip;
-    transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   PREMIUM AWWWARDS UTILS
+   PREMIUM STRIPE & MAC UI UTILS
    ═══════════════════════════════════════════════════════════════ */
 
-/* Dynamic Text Gradients */
-.text-gradient-animated {
-  background: linear-gradient(
-    to right, 
-    var(--color-1), 
-    var(--color-2), 
-    var(--color-3), 
-    var(--color-4), 
-    var(--color-1)
-  );
-  background-size: 400% 100%;
+/* Mac Window Styles */
+.mac-window {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.mac-sidebar {
+  background: var(--glass-sidebar);
+  border-right: 1px solid var(--border-muted);
+}
+
+/* Gradient Mesh Blobs */
+.mesh-blob {
+  position: absolute;
+  filter: blur(80px);
+  border-radius: 50%;
+  opacity: 0.6;
+  z-index: 0;
+  pointer-events: none;
+  animation: float 20s infinite ease-in-out alternate;
+}
+
+[data-theme="dark"] .mesh-blob {
+  filter: blur(100px); /* slightly more blur in dark mode */
+  opacity: 0.35;        /* softer glow in dark mode */
+}
+
+@keyframes float {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(5%, -5%) scale(1.1); }
+  100% { transform: translate(-5%, 5%) scale(0.95); }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--heading);
+  font-weight: 700;
+  letter-spacing: -0.02em; /* Stripe headings are tightly tracked */
+}
+
+/* Clean cards for grids */
+.stripe-card {
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  border: 1px solid var(--border-muted);
+}
+
+.stripe-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.stripe-card-lg {
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-muted);
+}
+
+/* Subtle accent block for tags */
+.tag-subtle {
+  background: var(--accent-light);
+  color: var(--accent);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+/* Primary Button */
+.btn-primary {
+  background-color: var(--accent);
+  color: #ffffff;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 8px; /* Slightly squarer than full pills */
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08); border: none;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Gradient accent for special text */
+.text-blurple-gradient {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--secondary) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: gradient-flow 8s linear infinite;
-}
-
-@keyframes gradient-flow {
-  0% { background-position: 100% 0; }
-  100% { background-position: -300% 0; }
-}
-
-/* Glassmorphism that actually looks amazing */
-.glass-super {
-  background: var(--card);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--border);
-  box-shadow: 
-    0 8px 32px 0 rgba(0, 0, 0, 0.08),
-    inset 0 1px 1px 0 var(--glass-border);
-}
-
-.hover-glow-super {
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.hover-glow-super:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 
-    0 24px 48px -12px rgba(0, 0, 0, 0.15),
-    0 0 20px 0 var(--color-1),
-    inset 0 1px 1px 0 var(--glass-border);
-  border-color: var(--color-1);
-}
-
-/* Abstract Blobs for BackgroundManager */
-.blob-1 { background-color: var(--color-1); }
-.blob-2 { background-color: var(--color-2); }
-.blob-3 { background-color: var(--color-3); }
-.blob-4 { background-color: var(--color-4); }
-
-.blur-overlay {
-  backdrop-filter: blur(80px);
-  -webkit-backdrop-filter: blur(80px);
 }
 
 .section-padding {
-  padding: 12vh 4vw;
+  padding: 8rem 2rem;
+}
+@media (min-width: 1024px) {
+  .section-padding { padding: 10rem 4rem; }
+}
+
+.container-main {
+  max-width: 1140px; /* Clean constrained width like Stripe docs */
+  margin: 0 auto;
 }
 
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
   background: var(--background);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-2);
-  border-radius: 99px;
+  background: var(--border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
 }

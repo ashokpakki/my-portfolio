@@ -1,6 +1,5 @@
 import { ThemeProvider } from "./context/ThemeContext";
 
-import BackgroundManager from "./components/BackgroundManager";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import About from "./components/About";
@@ -12,13 +11,11 @@ import Footer from "./components/Footer";
 export default function App() {
     return (
         <ThemeProvider>
-            <BackgroundManager />
-
             {/* Fixed navigation */}
             <Navbar />
 
             {/* Main content */}
-            <main>
+            <main className="relative w-full">
                 <Hero />
                 <About />
                 <Skills />

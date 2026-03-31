@@ -1,108 +1,98 @@
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
-import { useEffect, useRef } from "react";
-import { MapPin } from "lucide-react";
+import { motion } from "framer-motion";
+import { MapPin, ArrowRight } from "lucide-react";
 
 export default function Hero() {
-    const { scrollY } = useScroll();
-    const yTransform = useTransform(scrollY, [0, 800], [0, 300]);
-    const opacityTransform = useTransform(scrollY, [0, 400], [1, 0]);
-
-    // Magnetic cursor effect for the massive text block itself
-    const containerRef = useRef<HTMLDivElement>(null);
-    const mouseX = useMotionValue(0);
-    const mouseY = useMotionValue(0);
-
-    const smoothX = useSpring(mouseX, { damping: 50, stiffness: 400 });
-    const smoothY = useSpring(mouseY, { damping: 50, stiffness: 400 });
-
-    const rotateX = useTransform(smoothY, [-0.5, 0.5], ["5deg", "-5deg"]);
-    const rotateY = useTransform(smoothX, [-0.5, 0.5], ["-5deg", "5deg"]);
-
-    useEffect(() => {
-        const handleMouseMove = (e: MouseEvent) => {
-            if (!containerRef.current) return;
-            const rect = containerRef.current.getBoundingClientRect();
-            const width = rect.width;
-            const height = rect.height;
-            const clientX = e.clientX - rect.left - width / 2;
-            const clientY = e.clientY - rect.top - height / 2;
-            
-            mouseX.set(clientX / width);
-            mouseY.set(clientY / height);
-        };
-
-        window.addEventListener("mousemove", handleMouseMove);
-        return () => window.removeEventListener("mousemove", handleMouseMove);
-    }, [mouseX, mouseY]);
-
     return (
         <section
             id="hero"
-            className="relative min-h-[110vh] flex flex-col items-center justify-center overflow-hidden"
-            style={{ perspective: 1000 }}
+            className="relative min-h-[90vh] flex items-center pt-24 overflow-hidden"
         >
-            <motion.div
-                ref={containerRef}
-                style={{
-                    y: yTransform,
-                    opacity: opacityTransform,
-                    rotateX,
-                    rotateY,
-                    transformStyle: "preserve-3d"
-                }}
-                className="z-10 w-full flex flex-col items-center justify-center pointer-events-none"
-            >
-                <motion.div
-                    initial={{ scale: 0.8, opacity: 0, filter: "blur(20px)" }}
-                    animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
-                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-col items-center"
-                >
-                    {/* The massive dynamic gradient title */}
-                    <h1 className="text-[clamp(5rem,22vw,18rem)] font-black leading-[0.8] tracking-[-0.04em] text-center mb-6">
-                        <span className="text-gradient-animated block transform-gpu translate-z-10">ASHOK</span>
-                        <span className="text-foreground block transform-gpu translate-z-[20px] drop-shadow-2xl">PAKKI</span>
-                    </h1>
+            {/* Stripe-like Animated Gradient Mesh */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="mesh-blob bg-[var(--accent)] w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] top-[-20%] left-[-10%]" style={{ animationDelay: '0s', animationDuration: '25s' }} />
+                <div className="mesh-blob bg-[var(--secondary)] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] top-[10%] right-[-10%]" style={{ animationDelay: '-7s', animationDuration: '30s' }} />
+                <div className="mesh-blob bg-[var(--tertiary)] w-[70vw] h-[70vw] max-w-[900px] max-h-[900px] bottom-[-30%] left-[10%]" style={{ animationDelay: '-15s', animationDuration: '35s' }} />
+            </div>
 
-                    <div className="flex flex-col sm:flex-row items-center gap-6 mt-12 px-6 pointer-events-auto" style={{ transform: "translateZ(30px)" }}>
-                        <div className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-[var(--color-1)] glass-super shadow-[0_0_30px_var(--color-1)] text-foreground font-semibold text-sm hover-glow-super cursor-default">
-                            <span className="relative flex h-3 w-3 mr-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-3)] opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-3 w-3 bg-[var(--color-3)]"></span>
+            <div className="container-main px-6 mx-auto w-full relative z-10">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    
+                    {/* Left Column: Text Content */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, ease: "easeOut" }}
+                        className="flex flex-col items-start text-left max-w-2xl"
+                    >
+                        {/* Status pill */}
+                        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--accent-light)] text-[var(--accent)] font-semibold text-sm mb-8 border border-[var(--accent)]/10">
+                            <span className="relative flex h-2 w-2 mr-1">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--accent)] opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--accent)]"></span>
                             </span>
                             Available for hire
                         </div>
 
-                        <a 
-                            href="#projects" 
-                            className="px-8 py-3 rounded-full bg-foreground text-background font-bold uppercase tracking-wider text-sm hover:scale-105 transition-transform"
-                        >
-                            View Work
-                        </a>
-                    </div>
-                </motion.div>
-            </motion.div>
+                        {/* Massive Typography */}
+                        <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[var(--heading)] leading-[1.05] mb-6">
+                            Ashok Pakki. <br />
+                            <span className="text-[var(--foreground)] font-medium">Full Stack <br/> Developer.</span>
+                        </h1>
 
-            {/* Awwwards style aesthetic marker */}
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.5 }}
-                className="absolute bottom-12 left-8 md:left-12 flex items-center gap-3 text-sm font-bold tracking-[0.2em] uppercase text-foreground z-20"
-            >
-                <div className="w-8 h-[2px] bg-[var(--color-2)] shadow-[0_0_10px_var(--color-2)]" />
-                <span className="text-gradient-animated">Scroll Explorer</span>
-            </motion.div>
-            
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.5 }}
-                className="absolute bottom-12 right-8 md:right-12 hidden md:flex items-center gap-2 text-sm font-bold text-foreground z-20"
-            >
-                <MapPin size={16} className="text-[var(--color-1)] animate-bounce" />
-                Hyderabad
-            </motion.div>
+                        <p className="text-lg sm:text-xl text-[var(--foreground)] mb-10 max-w-lg leading-relaxed font-medium">
+                            I build scalable, high-performance web applications and systems with a focus on modern architecture and clean design.
+                        </p>
+
+                        <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+                            <a 
+                                href="#projects" 
+                                className="group btn-primary flex items-center gap-2 w-full sm:w-auto justify-center text-base"
+                            >
+                                View Work
+                                <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+                            </a>
+                            <a 
+                                href="#contact" 
+                                className="group flex items-center gap-2 px-6 py-2.5 rounded-lg text-[var(--heading)] font-semibold border border-[var(--border)] hover:bg-[var(--border-muted)] transition-colors w-full sm:w-auto justify-center text-base"
+                            >
+                                Contact Me
+                            </a>
+                        </div>
+                    </motion.div>
+
+                    {/* Right Column: Subtle abstract element or strictly whitespace? 
+                        Stripe usually has beautiful graphics here. We'll use a clean, sophisticated 
+                        abstract tech-related structural element using CSS/Framer Motion */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                        className="hidden lg:flex justify-end relative"
+                    >
+                        <div className="relative w-full max-w-md aspect-square">
+                            {/* Abstract layered plates resembling modern server racks or structural code blocks */}
+                            <div className="absolute inset-0 bg-gradient-to-tr from-[var(--border-muted)] to-transparent rounded-3xl transform rotate-3" />
+                            <div className="absolute inset-4 bg-[var(--card)] border border-[var(--border)] shadow-xl rounded-2xl flex flex-col p-8 gap-4 overflow-hidden">
+                                {/* Code/Structure representation */}
+                                <div className="h-4 w-1/3 bg-[var(--border)] rounded-full animate-pulse opacity-50" />
+                                <div className="h-4 w-3/4 bg-[var(--border)] rounded-full animate-pulse opacity-40 delay-75" />
+                                <div className="h-4 w-1/2 bg-[var(--border)] rounded-full animate-pulse opacity-60 delay-150" />
+                                
+                                <div className="mt-auto flex justify-between items-center text-[var(--foreground)] text-sm font-medium border-t border-[var(--border)] pt-4">
+                                    <div className="flex items-center gap-2">
+                                        <MapPin size={16} className="text-[var(--accent)]" />
+                                        Hyderabad, India
+                                    </div>
+                                    <div className="text-[var(--accent)] font-mono text-xs bg-[var(--accent-light)] px-2 py-1 rounded">
+                                        SYS.ONLINE
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+
+                </div>
+            </div>
         </section>
     );
 }
